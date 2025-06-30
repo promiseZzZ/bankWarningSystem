@@ -1,0 +1,15 @@
+@use './variables';
+@use '../../node_modules/vuetify/lib/styles/main.sass';
+@use './override';
+@use './layout/container';
+@use './layout/sidebar';
+@use './layout/topbar';
+@use './components/VButtons';
+@use './components/VCard';
+@use './components/VInput';
+@use './components/VNavigationDrawer';
+@use './components/VShadow';
+@use './components/VTextField';
+@use './pages/dashboards';
+@use './pages/auth';
+@use '../../node_modules/vue3-perfect-scrollbar/dist/style.css';

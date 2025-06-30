@@ -1,0 +1,23 @@
+@use 'variables';
+
+html {
+    .bg-success {
+        color: white !important;
+    }
+
+    .bg-primary {
+        color: variables.$white !important;
+    }
+
+    .bg-secondary {
+        color: variables.$white !important;
+    }
+
+    .bg-warning {
+        color: variables.$white !important;
+    }
+}
+.border,
+.v-divider {
+    border-color: rgba(var(--v-border-color), 1) !important;
+}

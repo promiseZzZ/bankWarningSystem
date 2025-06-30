@@ -1,0 +1,4 @@
+@use '../variables';
+.elevation-10 {
+    box-shadow: variables.$box-shadow !important;
+  }

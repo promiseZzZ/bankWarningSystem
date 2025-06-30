@@ -1,0 +1,61 @@
+@use '../variables';
+//
+// Light Buttons
+//
+
+.v-btn {
+    &.bg-lightprimary {
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: rgb(var(--v-theme-primary)) !important;
+        color: variables.$white !important;
+      }
+    }
+    &.bg-lightsecondary {
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: rgb(var(--v-theme-secondary)) !important;
+        color: variables.$white !important;
+      }
+    }
+    &.text-facebook {
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: rgb(var(--v-theme-facebook)) !important;
+        color: variables.$white !important;
+      }
+    }
+    &.text-twitter {
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: rgb(var(--v-theme-twitter)) !important;
+        color: variables.$white !important;
+      }
+    }
+    &.text-linkedin {
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: rgb(var(--v-theme-linkedin)) !important;
+        color: variables.$white !important;
+      }
+    }
+  }
+  
+  .v-btn {
+    text-transform: capitalize;
+    letter-spacing: variables.$btn-letter-spacing;
+  }
+  .v-btn--icon.v-btn--density-default {
+    width: calc(var(--v-btn-height) + 6px);
+    height: calc(var(--v-btn-height) + 6px);
+  }
+  
+  .v-btn-group .v-btn {
+    height: inherit !important;
+  }
+  
