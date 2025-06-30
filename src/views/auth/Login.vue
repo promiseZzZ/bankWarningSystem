@@ -7,7 +7,7 @@ import LoginForm from '../../components/auth/LoginForm.vue';
 <template>
     <div class="authentication">
         <div class="background-text">
-            <h1 class="text-h3 font-weight-bold">银行监控故障告警系统</h1>
+            <h1 class="text-h2 font-weight-bold">银行监控告警系统</h1>
         </div>
         <v-container fluid class="pa-3">
             <v-row class="h-100vh d-flex justify-end align-center">
@@ -52,7 +52,7 @@ import LoginForm from '../../components/auth/LoginForm.vue';
 /* 响应式调整 */
 @media (max-width: 1264px) {
     .background-text {
-        left: 5%;
+        left: 10%;
         max-width: 450px;
     }
 }

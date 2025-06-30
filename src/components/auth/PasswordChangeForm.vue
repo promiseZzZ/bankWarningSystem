@@ -43,7 +43,7 @@ async function changepassword() {
       successMessage.value = '密码修改成功';
       
       // 清除本地token（如果需要）
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('token');
       
       // 2秒后跳转登录页
       setTimeout(() => {

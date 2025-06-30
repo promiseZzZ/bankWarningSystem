@@ -5,7 +5,7 @@ import PasswordChangeForm from '../../components/auth/PasswordChangeForm.vue';
 <template>
     <div class="authentication">
         <div class="background-text">
-            <h1 class="text-h3 font-weight-bold">银行监控故障告警系统</h1>
+            <h1 class="text-h2 font-weight-bold">银行监控告警系统</h1>
         </div>
         <v-container fluid class="pa-3">
             <v-row class="h-100vh d-flex justify-end align-center">

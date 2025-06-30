@@ -1,39 +1,132 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import MainRoutes from './MainRoutes';
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
 import AuthRoutes from './AuthRoutes';
 import { useUserStore } from '../store/user';
 
-export const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
-    routes: [
-        {
-            path: '/:pathMatch(.*)*',
-            component: () => import('../views/auth/Login.vue')
-        },
-        MainRoutes,
-        AuthRoutes
-    ]
-});
 
-// 添加登陆访问拦截
-// 添加路由守卫
-router.beforeEach((to) => {
-    const userStore = useUserStore();
-    
-    // 定义允许匿名访问的路由路径
-    const AllowedPaths = [
-      '/auth/login',
-      '/auth/register',
-      '/auth/changepassword'
-    ];
-  
-    // 当用户没有 token 且访问的不是白名单路径时，重定向到登录页
-    if (!userStore.token && !AllowedPaths.includes(to.path)) {
-      return '/auth/login';
+//静态路由（不需要权限）
+const Constantroutes: RouteRecordRaw[] = [
+  AuthRoutes,
+]
+
+//创建路由实例（只包含静态路由）
+export const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: Constantroutes
+})
+
+//存储动态路由是否为已添加的状态
+let isAddDynamicRoutes = false;
+
+//动态添加路由的方法
+export function addDynamicRoutes(routesToAdd: RouteRecordRaw[]) {
+  if (isAddDynamicRoutes) return;
+  const currentRoutes = router.getRoutes();
+  const notFoundRoute = currentRoutes.find(route => route.path === '/:pathMatch(.*)*');
+
+  if (notFoundRoute && notFoundRoute.name) {
+    router.removeRoute(notFoundRoute.name);
+  }
+
+  routesToAdd.forEach(route => {
+    router.addRoute(route);
+  })
+
+  router.addRoute({
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('../views/auth/Login.vue')
+  });
+
+  isAddDynamicRoutes = true;
+
+}
+
+
+//重置路由
+export function resetRouter() {
+  //获取当前路由
+  const currentRoutes = router.getRoutes();
+
+  //移除所有动态添加的路由（通过名称）
+  currentRoutes.forEach(route => {
+    //保留静态路由和404路由
+    if (route.name && route.name !== 'NotFound') {
+      router.removeRoute(route.name);
     }
-  
-    // 其他情况正常放行
+})
+
+  isAddDynamicRoutes = false;
+}
+
+//全局路由守卫
+router.beforeEach(async (to, from ,next) => {
+  const userStore = useUserStore()
+  const allowedPaths = [
+    '/auth/login', 
+    '/auth/register', 
+    '/auth/changepassword']
+
+  // 未登录且访问非白名单页面 → 跳转登录页
+  if (!userStore.token && !allowedPaths.includes(to.path)) {
+    next('/auth/login');
+    return;
+  }
+
+  //已登录但未添加动态路由 → 添加动态路由
+  if (userStore.token && !isAddDynamicRoutes) {
+    try {
+    //获取用户权限
+    const role = userStore.role;
+
+    //导入动态路由定义
+    const dynamicRoutesModule = await import('./DynamicRoutes');
+
+    //根据权限过滤路由
+    const filteredRoutes = filterRoutesByRole(dynamicRoutesModule.dynamicRoutes, role);
+
+    //添加过滤后的路由
+    addDynamicRoutes(filteredRoutes);
+
+    next({...to, replace: true});
+    } catch (error) {
+      console.error('添加动态路由失败:', error);
+      next('/error');
+    }
+    return;
+  }
+
+  //已登录但访问登录页 → 重定向
+  if (userStore.token && to.path === '/auth/login') {
+    next('/main');
+    return;
+  }
+
+  next();
+})
+
+//路由权限过滤函数
+export function filterRoutesByRole(routes: RouteRecordRaw[], role: string) {
+  return routes.filter(route => {
+    // 处理嵌套路由
+    if (route.children) {
+      route.children = filterRoutesByRole(route.children, role);
+      // 如果子路由全部被过滤掉，且当前路由没有组件，则过滤掉整个路由
+      if (route.children.length === 0 && !route.component) {
+        return false;
+      }
+    }
+    
+    // 检查当前路由是否有权限要求
+    if (route.meta?.roles) {
+      const requiredRoles = Array.isArray(route.meta.roles) 
+        ? route.meta.roles 
+        : [route.meta.roles];
+      
+      return requiredRoles.some(r => role.includes(r));
+    }
+    
     return true;
   });
+}
 
 

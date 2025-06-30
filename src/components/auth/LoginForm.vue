@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from '../../store/user';
 import { axiosInstance } from '../../utils/request';
 
-const jobnumber = ref('');
+const code = ref('');
 const password = ref('');
 const captcha = ref('');
 const form = ref();
@@ -13,7 +13,7 @@ const checkbox = ref(true);
 const userStore = useUserStore();
 
 // 验证规则
-const jobnumberRules = [
+const codeRules = [
   (v: string) => !!v || '工号不能为空',
 ];
 
@@ -30,28 +30,58 @@ async function signin() {
   if (valid) {
     try {
       const response = await axiosInstance.post('/auth/login', {
-        jobnumber: jobnumber.value,
+        code: code.value,
         password: password.value,
-        captcha: captcha.value
+        //captcha: captcha.value
       });
+      
+      if(response.data.status === 0){
 
       // 存储token到localStorage
       userStore.setToken(response.data.token);
+
+      //存储role到LocalStorage
+      userStore.setRole(response.data.code);
+
       
-      // 如果勾选记住我，存储用户名（不建议存储密码）
+      // 如果勾选记住我，存储用户名和密码
       if (checkbox.value) {
-        localStorage.setItem('rememberedUser', jobnumber.value);
+        localStorage.setItem('rememberedUser', code.value);
+        localStorage.setItem('rememberedPassword', password.value);
+        console.log('记住密码', code.value, password.value)
       } else {
         localStorage.removeItem('rememberedUser');
+        localStorage.removeItem('rememberedPassword');
       }
-      router.push({ path: '/main/dashboard' });
-      
+      router.push({ path: '/main/main' });
+      console.log('登录成功', code.value, password.value, captcha.value)
+      } else {
+        // 处理业务错误
+        const errorMessage = response.data.message || '登录失败';
+        
+        // 根据状态码细化错误提示
+        if (response.data.status === 5) {
+          if (errorMessage.includes("工号或密码错误")) {
+            alert('工号或密码错误');
+          } else if (errorMessage.includes("没有权限")) {
+            alert('您的账号没有权限，请联系管理员审批');
+          } else {
+            alert(errorMessage);
+          }
+        } else {
+          alert(errorMessage);
+        }
+      }
+
     } catch (error: any) {
       // 细化错误处理
       if (error.response) {
         switch (error.response.status) {
           case 401:
             alert('工号不存在或密码错误');
+            break;
+          case 403:
+            alert('访问被拒绝，无权限');
             break;
           case 500:
             alert('服务器错误，请稍后再试');
@@ -80,8 +110,8 @@ function refreshCaptcha() {
         <v-label class="font-weight-bold mb-1">工号</v-label>
         <v-text-field
           placeholder="请输入工号"
-          v-model="jobnumber"
-          :rules="jobnumberRules"
+          v-model="code"
+          :rules="codeRules"
           variant="outlined"
           color="primary"
           validate-on-blur
