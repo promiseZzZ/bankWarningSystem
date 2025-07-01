@@ -21,7 +21,7 @@ import LoginForm from '../../components/auth/LoginForm.vue';
                             <h6 class="text-h6 text-muted font-weight-medium d-flex justify-center align-center mt-3">
                                 第一次使用？
                                 <RouterLink to="/auth/register"
-                                    class="text-primary text-decoration-none text-body-1 opacity-1 font-weight-medium pl-2">
+                                    class="text-primary text-decoration-none text-h6 text-body-1 opacity-1 font-weight-medium pl-2">
                                     注册一个用户</RouterLink>
                             </h6>
                         </v-card-item>

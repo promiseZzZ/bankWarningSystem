@@ -14,6 +14,8 @@ import { createPinia } from 'pinia';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { axiosInstance } from './utils/request';
 import dayjs from 'dayjs';
+import VueECharts from 'vue-echarts';
+import 'echarts'
 
 
 const pinia = createPinia();
@@ -23,6 +25,7 @@ app.config.globalProperties.$axios = axiosInstance; // 挂载到全局属性
 app.config.globalProperties.$dayjs = dayjs;
 // 全局注册 PerfectScrollbar 组件
 app.component('PerfectScrollbar', PerfectScrollbar);
+app.component('VueEcharts', VueECharts);
 app.use(vuetify);
 app.use(router);
 app.use(VueTablerIcons);

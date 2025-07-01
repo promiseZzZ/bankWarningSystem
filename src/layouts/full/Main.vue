@@ -28,7 +28,7 @@ const sDrawer = ref(true);
         <div class="pa-4 d-flex flex-column align-left text-left">
             <logo/>
             <br/>
-            <h1>虚假新闻检测平台</h1>
+            <h1>银行监控告警系统 </h1>
         </div>
         
         <!-- ---------------------------------------------- -->

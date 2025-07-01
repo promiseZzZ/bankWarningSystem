@@ -5,7 +5,7 @@ import { axiosInstance } from '../../utils/request';
 
 const router = useRouter();
 const form = ref();
-const jobnumber = ref('');
+const code = ref('');
 const newpassword = ref('');
 const confirmNewPassword = ref('');
 const loading = ref(false); 
@@ -13,7 +13,7 @@ const errorMessage = ref('');
 const successMessage = ref(''); 
 
 // 验证规则
-const jobnumberRules = [
+const codeRules = [
   (v: string) => !!v || '工号不能为空',
 ];
 
@@ -34,13 +34,15 @@ async function changepassword() {
   if (valid) {
     loading.value = true;
     try {
-        await axiosInstance.put('/user/update', {
-        jobnumber: jobnumber.value, // 字段名需与后端实体类一致
+        const response = await axiosInstance.put('/user/updatePassword', {
+        code: code.value, // 字段名需与后端实体类一致
         password: newpassword.value
       });
 
+      if(response.data.status === 0){
+
       // 显示成功提示
-      successMessage.value = '密码修改成功';
+      alert('密码修改成功');
       
       // 清除本地token（如果需要）
       localStorage.removeItem('token');
@@ -49,26 +51,30 @@ async function changepassword() {
       setTimeout(() => {
         router.push({ path: '/auth/login' });
       }, 3000);
+    } else  {
+      const errorMessage = response.data.message || '密码修改失败';
 
-    } catch (error: any) {
-      if (error.response) {
-        switch (error.response.status) {
-          case 404:
-            errorMessage.value = '工号不存在';
-            break;
-          case 500:
-            errorMessage.value = '服务器错误，请稍后重试';
-            break;
-          default:
-            errorMessage.value = `修改失败: ${error.response.data}`;
-        }
-      } else {
-        errorMessage.value = '网络连接异常，请检查网络';
+      if(response.data.status === 2){
+        alert(errorMessage);
       }
-    } finally {
-      loading.value = false;
     }
+
+  } catch (error: any) {
+    if (error.response) {
+      switch (error.response.status) {
+        case 500:
+          errorMessage.value = '服务器错误，请稍后重试';
+          break;
+        default:
+          errorMessage.value = `修改失败: ${error.response.data}`;
+      }
+    } else {
+      errorMessage.value = '网络连接异常，请检查网络';
+    }
+  } finally {
+    loading.value = false;
   }
+}
 }
 
 function back(){
@@ -95,8 +101,8 @@ function back(){
       <v-col cols="12">
         <v-label class="font-weight-bold mb-1">工号</v-label>
         <v-text-field 
-          v-model="jobnumber"
-          :rules="jobnumberRules"
+          v-model="code"
+          :rules="codeRules"
           variant="outlined"
           color="primary"
           required

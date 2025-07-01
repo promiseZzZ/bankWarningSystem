@@ -1,6 +1,5 @@
-import {
-    LayoutDashboardIcon,  TypographyIcon,UserIcon
-} from 'vue-tabler-icons';
+import {UserIcon,HeartRateMonitorIcon, ChartDots2Icon, 
+    ChecklistIcon, AntennaBars5Icon, AntennaBarsOffIcon,} from 'vue-tabler-icons';
 
 export interface menu {
     header?: string;
@@ -18,23 +17,38 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
-    { header: 'Home' },
+    { header: '监控告警' },
     {
-        title: '新闻检测',
-        icon: LayoutDashboardIcon,
-        to: '/main/dashboard'
+        title: '性能监控',
+        icon: HeartRateMonitorIcon,
+        to: '/main/performanceMonitoring'
     },
-    { header: 'Search' },
     {
-        title: '记录查询',
-        icon: TypographyIcon,
-        to: '/main/ui/typography'
+        title: '性能分析',
+        icon: ChartDots2Icon,
+        to: '/main/performanceAnalysis'
     },
-    { header: 'Account'},
+    {
+        title: '告警记录',
+        icon: ChecklistIcon,
+        to: '/main/alarmRecord'
+    },
+    { header: '数据分析' },
+    {
+        title: '离线分析',
+        icon: AntennaBarsOffIcon,
+        to: '/main/offlineAnalysis'
+    },
+    {
+        title: '实时分析',
+        icon: AntennaBars5Icon,
+        to: '/main/realTimeAnalysis'
+    },
+    { header: '账户管理'},
     {
         title: '账户管理',
         icon: UserIcon,
-        to: '/main/ui/accountmanage'
+        to: '/main/AccountManage'
     }
 ];
 

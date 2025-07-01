@@ -5,7 +5,7 @@ import { axiosInstance } from '../../utils/request';
 
 const router = useRouter();
 const form = ref();
-const jobnumber = ref('');
+const code = ref('');
 const username = ref('');
 const password = ref('');
 const confirmPassword = ref('');
@@ -14,7 +14,7 @@ const errorMessage = ref('');
 const successMessage = ref('');
 
 // 增强验证规则
-const jobnumberRules = [
+const codeRules = [
   (v: string) => !!v || '工号不能为空',
   (v: string) => /^[a-zA-Z0-9_]+$/.test(v) || '只能包含字母、数字和下划线'
 ];
@@ -39,24 +39,27 @@ const confirmPasswordRules = [
 
 
 async function signup() {
-  errorMessage.value = '';
-  successMessage.value = '';
   const { valid } = await form.value.validate();
   
   if (valid) {
     loading.value = true;
     try {
-        await axiosInstance.post('/user/register', {
-        jobnumber: jobnumber.value, 
-        username: username.value,
+        const response = await axiosInstance.post('/user/register', {
+        code: code.value, 
+        use_name: username.value,
         password: password.value
       });
 
-      successMessage.value = '注册成功';
+      if(response.data.status === 0){
+        alert('注册成功,将跳转登录页');
       setTimeout(() => {
         router.push('/auth/login');
-      }, 3000);
-
+      }, 2000);
+    } else {
+      if(response.data.status === 2){
+        alert(response.data.message);
+      }
+    }
     } catch (error: any) {
       if (error.response) {
         switch (error.response.status) {
@@ -110,8 +113,8 @@ async function signup() {
       <v-col cols="12">
         <v-label class="font-weight-bold mb-1">工号</v-label>
         <v-text-field
-          v-model="jobnumber"
-          :rules="jobnumberRules"
+          v-model="code"
+          :rules="codeRules"
           variant="outlined"
           color="primary"
           :disabled="loading"

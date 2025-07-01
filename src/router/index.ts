@@ -87,46 +87,72 @@ router.beforeEach(async (to, from ,next) => {
     //添加过滤后的路由
     addDynamicRoutes(filteredRoutes);
 
+    // 如果当前路径不存在，重定向到默认页面
+    const currentRoute = router.resolve(to.path);
+    if (currentRoute.matched.length === 0) {
+      next('/main/performanceMonitoring');
+      return;
+    }
+
+
     next({...to, replace: true});
     } catch (error) {
-      console.error('添加动态路由失败:', error);
       next('/error');
     }
     return;
   }
 
-  //已登录但访问登录页 → 重定向
-  if (userStore.token && to.path === '/auth/login') {
-    next('/main');
+  //role为'0'时，强制跳转至登录页
+  if(userStore.token && userStore.role === 0 && !allowedPaths.includes(to.path)){
+    next('/auth/login');
     return;
   }
+
+  //已登录但访问登录页 → 重定向
+  if (userStore.token && to.path === '/auth/login') {
+    next('/main/performanceMonitoring');
+    return;
+  }
+
 
   next();
 })
 
 //路由权限过滤函数
-export function filterRoutesByRole(routes: RouteRecordRaw[], role: string) {
-  return routes.filter(route => {
-    // 处理嵌套路由
-    if (route.children) {
-      route.children = filterRoutesByRole(route.children, role);
-      // 如果子路由全部被过滤掉，且当前路由没有组件，则过滤掉整个路由
-      if (route.children.length === 0 && !route.component) {
-        return false;
+export function filterRoutesByRole(routes: RouteRecordRaw[], role: number) {
+  if(role === 2){
+    return routes.map(route => {
+      const newRoute = {...route };
+      if (route.children) {
+        const filteredChildren = filterRoutesByRole(route.children, role);
+        newRoute.children = filteredChildren.length > 0 ? filteredChildren : undefined
       }
-    }
-    
-    // 检查当前路由是否有权限要求
-    if (route.meta?.roles) {
-      const requiredRoles = Array.isArray(route.meta.roles) 
-        ? route.meta.roles 
-        : [route.meta.roles];
-      
-      return requiredRoles.some(r => role.includes(r));
-    }
-    
-    return true;
-  });
+      return newRoute;
+    });
+  }
+  return routes
+    .map(route => {
+      // 深拷贝当前路由
+      const newRoute = { ...route };
+      if (route.children) {
+        const filteredChildren = filterRoutesByRole(route.children, role);
+        newRoute.children = filteredChildren.length > 0 ? filteredChildren : undefined
+        if (!newRoute.children && !newRoute.component) {
+          return undefined;
+        }
+      }
+      // 检查当前路由是否有权限要求
+      if (route.meta?.roles) {
+        const requiredRoles = Array.isArray(route.meta.roles) 
+          ? route.meta.roles 
+          : [route.meta.roles];
+        if(!requiredRoles.some(r => role === r)){
+          return undefined;
+        }
+      }
+      return newRoute;
+    })
+    .filter((route): route is RouteRecordRaw => !!route);
 }
 
 

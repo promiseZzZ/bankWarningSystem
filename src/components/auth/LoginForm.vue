@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../../store/user';
 import { axiosInstance } from '../../utils/request';
+import { addDynamicRoutes, filterRoutesByRole } from '../../router/index';
+import { dynamicRoutes } from '../../router/DynamicRoutes';
 
 const code = ref('');
 const password = ref('');
@@ -34,27 +36,32 @@ async function signin() {
         password: password.value,
         //captcha: captcha.value
       });
-      
       if(response.data.status === 0){
 
-      // 存储token到localStorage
-      userStore.setToken(response.data.token);
+        // 存储token到localStorage
+        userStore.setToken(response.data.data.token);
 
-      //存储role到LocalStorage
-      userStore.setRole(response.data.code);
+        //存储role到LocalStorage
+        userStore.setRole(response.data.code);
 
-      
-      // 如果勾选记住我，存储用户名和密码
-      if (checkbox.value) {
-        localStorage.setItem('rememberedUser', code.value);
-        localStorage.setItem('rememberedPassword', password.value);
-        console.log('记住密码', code.value, password.value)
-      } else {
-        localStorage.removeItem('rememberedUser');
-        localStorage.removeItem('rememberedPassword');
-      }
-      router.push({ path: '/main/main' });
-      console.log('登录成功', code.value, password.value, captcha.value)
+        await nextTick();
+
+        // 根据role添加动态路由
+        const filteredRoutes = filterRoutesByRole(dynamicRoutes, response.data.code);
+        addDynamicRoutes(filteredRoutes);
+
+
+        // 如果勾选记住我，存储用户名和密码
+        if (checkbox.value) {
+          localStorage.setItem('rememberedUser', code.value);
+          localStorage.setItem('rememberedPassword', password.value);
+          console.log('记住密码', code.value, password.value)
+        } else {
+          localStorage.removeItem('rememberedUser');
+          localStorage.removeItem('rememberedPassword');
+        }
+
+        router.push('/main/dashBoard');
       } else {
         // 处理业务错误
         const errorMessage = response.data.message || '登录失败';
@@ -68,8 +75,6 @@ async function signin() {
           } else {
             alert(errorMessage);
           }
-        } else {
-          alert(errorMessage);
         }
       }
 
@@ -77,9 +82,6 @@ async function signin() {
       // 细化错误处理
       if (error.response) {
         switch (error.response.status) {
-          case 401:
-            alert('工号不存在或密码错误');
-            break;
           case 403:
             alert('访问被拒绝，无权限');
             break;
@@ -100,6 +102,7 @@ function refreshCaptcha() {
   const captcha = document.getElementById('captcha') as HTMLImageElement;
   captcha.src = '/captcha?t=' + new Date().getTime();
 }
+
 </script>
 
 <template>
@@ -115,6 +118,7 @@ function refreshCaptcha() {
           variant="outlined"
           color="primary"
           validate-on-blur
+          autocomplete="jobNumber"
         ></v-text-field>
       </v-col>
 
@@ -128,6 +132,7 @@ function refreshCaptcha() {
           type="password"
           color="primary"
           validate-on-blur
+          autocomplete="password"
         ></v-text-field>
       </v-col>
 
@@ -150,7 +155,7 @@ function refreshCaptcha() {
 
       <v-col cols="12" class="pt-0">
         <div class="d-flex flex-wrap align-center ml-n2">
-          <v-checkbox v-model="checkbox" color="primary" hide-details>
+          <v-checkbox v-model="checkbox" color="primary" hide-details :value="false">
             <template v-slot:label>
               <span class="text-body-1">记住密码？</span>
             </template>
