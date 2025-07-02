@@ -3,13 +3,20 @@ import { ref, shallowRef } from 'vue';
 import sidebarItems from './vertical-sidebar/sidebarItem';
 import NavGroup from './vertical-sidebar/NavGroup/index.vue';
 import NavItem from './vertical-sidebar/NavItem/index.vue';
-// Icon Imports
+import logo from './logo/Logo.vue'
 import { Menu2Icon} from 'vue-tabler-icons';
-// dropdown imports
 import NotificationDD from './vertical-header/NotificationDD.vue';
 import ProfileDD from './vertical-header/ProfileDD.vue';
-import logo from './logo/Logo.vue'
-const sidebarMenu = shallowRef(sidebarItems);
+import { useUserStore } from '../../store/user';
+
+const userStore = useUserStore();
+const userRole = userStore.role;
+
+let filteredSidebarItems = sidebarItems;
+if (userRole === 1) {
+    filteredSidebarItems = sidebarItems.filter(item => item.header !== '账户管理' && item.title !== '账户管理');
+}
+const sidebarMenu = shallowRef(filteredSidebarItems);
 const sDrawer = ref(true);
 </script>
 
@@ -25,10 +32,9 @@ const sDrawer = ref(true);
         :mini-variant-width="80"
     >
         <!---Logo part -->
-        <div class="pa-4 d-flex flex-column align-left text-left">
+        <div class="sidebar-logo-bar d-flex flex-row align-center justify-center">
             <logo/>
-            <br/>
-            <h1>银行监控告警系统 </h1>
+            <h1 class="logo-title ms-3 mb-0 nowrap-title">银行监控告警系统</h1>
         </div>
         
         <!-- ---------------------------------------------- -->
@@ -57,15 +63,14 @@ const sDrawer = ref(true);
     </v-navigation-drawer>
 
     <!------Header-------->
-    <v-app-bar elevation="0" height="70">
+    <v-app-bar elevation="0" height="70" class="custom-app-bar">
         <div class="d-flex align-center justify-space-between w-100">
-            <div>
-                <v-btn class="hidden-lg-and-up ms-md-3 ms-sm-5 ms-3 text-muted" @click="sDrawer = !sDrawer" icon variant="flat"
-                    size="small">
-                    <Menu2Icon size="20" stroke-width="1.5" /> 
-                </v-btn> 
-                 <!-- Notification -->
-                 <NotificationDD />
+            <div class="d-flex align-center">
+                <v-btn class="sidebar-toggle-btn me-2" icon variant="text" @click="sDrawer = !sDrawer">
+                    <Menu2Icon size="24" stroke-width="1.5" /> 
+                </v-btn>
+                <!-- Notification -->
+                <NotificationDD />
             </div>
             <div>
                 <!-- User Profile -->
@@ -148,6 +153,73 @@ const sDrawer = ref(true);
 
 ::v-deep .ps__thumb-y:hover {
     background-color: rgba(0,0,0,0.3) !important;
+}
+
+.v-navigation-drawer.leftSidebar {
+    background: rgb(0, 20, 40) !important;
+    border-radius: 0 0 16px 0;
+    box-shadow: 2px 0 12px rgba(33, 150, 243, 0.08);
+}
+
+.custom-app-bar {
+    background: rgb(0 20 40); /* 浅蓝渐变 */
+    border-radius: 0 0 16px 0;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.06);
+}
+
+.sidebar-logo-bar {
+    background: #596787b5;
+    padding: 20px 16px 20px 12px;
+    min-height: 80px;
+    box-shadow: none;
+    width: 100%;
+    overflow: hidden;
+}
+.logo-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+    /* 允许换行 */
+}
+
+
+/* sidebar和header所有文字颜色为白色 */
+::v-deep .v-list-item__content,
+::v-deep .v-list-item__title,
+::v-deep .v-list-item__subtitle,
+::v-deep .v-list-group__header__content,
+::v-deep .v-list-group__header__prepend,
+::v-deep .v-list-group__header__append,
+::v-deep .v-list-group__header,
+::v-deep .v-list-item,
+::v-deep .v-list-group__items,
+::v-deep .v-list-subheader,
+::v-deep .v-list-item__icon,
+::v-deep .v-list-item__prepend,
+::v-deep .v-list-item__append {
+    color: #fff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+.custom-app-bar,
+.custom-app-bar * {
+    color: #fff !important;
+}
+
+.sidebar-toggle-btn {
+    margin-right: 12px;
+    color: #1976d2;
+    background: transparent;
+}
+@media (max-width: 960px) {
+    .sidebar-logo-bar {
+        padding: 12px 8px 12px 4px;
+        min-height: 60px;
+    }
+    .logo-title {
+        font-size: 1.1rem;
+    }
 }
 </style>
 

@@ -61,7 +61,7 @@ async function signin() {
           localStorage.removeItem('rememberedPassword');
         }
 
-        router.push('/main/dashBoard');
+        router.push('/main/performanceMonitoring');
       } else {
         // 处理业务错误
         const errorMessage = response.data.message || '登录失败';

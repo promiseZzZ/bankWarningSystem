@@ -27,5 +27,5 @@ export default createVuetify({
             // set v-tooltip default location to top
             location: 'top'
         }
-    }
+    },
 });

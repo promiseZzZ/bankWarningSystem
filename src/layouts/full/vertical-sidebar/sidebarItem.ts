@@ -48,7 +48,7 @@ const sidebarItem: menu[] = [
     {
         title: '账户管理',
         icon: UserIcon,
-        to: '/main/AccountManage'
+        to: '/main/accountManage'
     }
 ];
 
