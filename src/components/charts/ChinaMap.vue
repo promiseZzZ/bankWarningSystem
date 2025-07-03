@@ -19,7 +19,7 @@ const props = defineProps<{
 const option = computed(() => ({
   title: {
     text: '外汇买入全国分布',
-    left: 'center'
+    left: '0',
   },
   tooltip: {
     trigger: 'item',

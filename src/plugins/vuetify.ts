@@ -5,6 +5,7 @@ import * as directives from 'vuetify/directives';
 import { PurpleTheme} from '../theme/LightTheme';
 
 
+
 export default createVuetify({
     components,
     directives,

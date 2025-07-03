@@ -15,7 +15,7 @@ axiosInstance.interceptors.request.use(
       if (userStore.token) {
         // 类型安全的 headers 处理
         config.headers = config.headers || {};
-        config.headers.Authorization = userStore.token; // 推荐携带 Bearer 前缀
+        config.headers.Authorization = `Bearer ${userStore.token}`; // 推荐携带 Bearer 前缀
       }
       return config;
     },

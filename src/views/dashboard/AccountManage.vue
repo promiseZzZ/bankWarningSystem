@@ -14,14 +14,9 @@
                     <!-- 优化内边距 -->
                     <v-card-item class="pa-5 pa-md-8">
                         <!-- 添加标题 -->
-                        <div class="text-center mb-6">
-                            <h1 class="text-h4 font-weight-bold ">修改密码</h1>
-                            <p class="text-medium-emphasis mt-2">请设置新的登录密码</p>
-                        </div>
 
                         <!-- 添加表单容器间距 -->
                         <div class="d-flex flex-column gap-4">
-                            <PasswordChangeForm />
                         </div>
                     </v-card-item>
                 </v-card>
@@ -31,7 +26,6 @@
 </template>
 
 <script setup lang="ts">
-import PasswordChangeForm from '../../components/auth/PasswordChangeForm.vue';
 </script>
 
 <style scoped>

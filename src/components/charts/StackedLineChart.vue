@@ -48,10 +48,12 @@
     align-items: center;
   }
   .chart-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
+    margin-left: 10px;
+    margin-top: 5px; 
     margin-bottom: 8px;
-    text-align: center;
+    text-align: left;
     width: 100%;
   }
   .stacked-line-echart {
