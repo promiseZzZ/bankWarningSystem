@@ -11,7 +11,7 @@
           </v-col>
           <v-col cols="4" class="d-flex flex-column justify-space-between">
             <v-card height="100" class="modern-card elevation-8" hover >
-              <v-card-subtitle class="subtitle">最近1分钟数据</v-card-subtitle>
+              <v-card-subtitle class="subtitle">最近10秒数据</v-card-subtitle>
               <div class="indicator-panel">
                 <v-row align="center" justify="space-around">
                   <v-col class="indicator-cell">
@@ -84,6 +84,7 @@
   import ChinaMap from '../../components/charts/ChinaMap.vue';
   import  ChinaMapJson  from '../../assets/china.json';
 
+
   // panel数据
   const atmData = ref({
     amount: 0,
@@ -105,7 +106,10 @@
     xData: [],
     series: []
   });
-  const lineData2 = ref({
+  const lineData2 = ref<{
+    xData: string[],
+    series: number[]
+  }>({
     xData: [],
     series: []
   });
@@ -114,6 +118,21 @@
   const piedata1 = ref([]);
   const piedata2 = ref([]);
   const piedata3 = ref([]);
+
+  async function fetchPanelData(transactionType: string) {
+    try {
+      const response = await axiosInstance.post('/realtime/getNationCount', {
+        transactionType: transactionType
+      });
+      if(response.data && transactionType === 'ATM') {
+        atmData.value.count = response.data.data;
+      } else if(response.data && transactionType === 'FX') {
+        FXData.value.count = response.data.data;
+      }
+    } catch (error) {
+      console.error('获取数据失败:', error);
+    }
+  }
 
   async function fetchMapData() {
     try {
@@ -126,40 +145,59 @@
     }
   }
 
-  async function fetchLineData1(transactionType: string) {
+  async function fetchLineDataInit(transactionType: string) {
     try {
       const response = await axiosInstance.post('/realtime/getNationAmount', {
         transactionType: transactionType
       });
-      if(response.data) {
-        const newXData:string = response.data.data[7];
-        const newAmount:number = response.data.xdata[7];
-        lineData1.value.xData.shift();
-        lineData1.value.series.shift();
-        lineData1.value.xData.push(newXData);
-        lineData1.value.series.push(newAmount);
-        
-        atmData.value.amount = newAmount;
+      if(response.data && response.data.data && transactionType === 'ATM') {
+        lineData1.value.xData = response.data.data.xdata;
+        lineData1.value.series = response.data.data.data;
+        atmData.value.amount = response.data.data.data[response.data.data.data.length - 1];
+        console.log(atmData.value.amount);
+      } else if(response.data && response.data.data && transactionType === 'FX') {
+        lineData2.value.xData = response.data.data.xdata;
+        lineData2.value.series = response.data.data.data;
+        FXData.value.amount = response.data.data.data[response.data.data.data.length - 1];
+        console.log(FXData.value.amount);
       }
     } catch (error) {
       console.error('获取数据失败:', error);
     }
   }
 
-  async function fetchLineData2(transactionType: string) {
+
+  async function fetchLineData(transactionType: string) {
     try {
       const response = await axiosInstance.post('/realtime/getNationAmount', {
         transactionType: transactionType
       });
-      if(response.data) {
-        const newXData:string = response.data.data[7];
-        const newAmount:number = response.data.xdata[7];
-        lineData1.value.xData.shift();
-        lineData1.value.series.shift();
-        lineData1.value.xData.push(newXData);
-        lineData1.value.series.push(newAmount);
-
-        FXData.value.amount = newAmount;
+      if(response.data && response.data.data && transactionType === 'ATM') {
+        // 检查数据是否相同，如果相同则不更新
+        const latestXData = response.data.data.xdata[response.data.data.xdata.length - 1];
+        const latestSeriesData = response.data.data.data[response.data.data.data.length - 1];
+        
+        if (lineData1.value.xData[lineData1.value.xData.length - 1] !== latestXData && 
+            lineData1.value.series[lineData1.value.series.length - 1] !== latestSeriesData) {
+          lineData1.value.xData.shift();
+          lineData1.value.series.shift();
+          lineData1.value.xData.push(latestXData);
+          lineData1.value.series.push(latestSeriesData);
+          atmData.value.amount = latestSeriesData;
+        }
+      } else if(response.data && response.data.data && transactionType === 'FX') {
+        // 检查数据是否相同，如果相同则不更新
+        const latestXData = response.data.data.xdata[response.data.data.xdata.length - 1];
+        const latestSeriesData = response.data.data.data[response.data.data.data.length - 1];
+        
+        if (lineData2.value.xData[lineData2.value.xData.length - 1] !== latestXData && 
+            lineData2.value.series[lineData2.value.series.length - 1] !== latestSeriesData) {
+          lineData2.value.xData.shift();
+          lineData2.value.series.shift();
+          lineData2.value.xData.push(latestXData);
+          lineData2.value.series.push(latestSeriesData);
+          FXData.value.amount = latestSeriesData;
+        }
       }
     } catch (error) {
       console.error('获取数据失败:', error);
@@ -176,6 +214,7 @@
       console.error('获取数据失败:', error);
     }
   }
+
   async function fetchPieData2() {
     try {
       const response = await axiosInstance.get('/realtime/getAgeRange');
@@ -186,6 +225,7 @@
       console.error('获取数据失败:', error);
     }
   }
+
   async function fetchPieData3() {
     try {
       const response = await axiosInstance.get('/realtime/getCurrency');
@@ -197,25 +237,38 @@
     }
   }
 
-  // 更新数据
-  function updateData() {
+  function initData() {
+    fetchPanelData('ATM');
+    fetchPanelData('FX');
     fetchMapData();
     fetchPieData1();
     fetchPieData2();
     fetchPieData3();
-    fetchLineData1('ATM');
-    fetchLineData2('FX');
+    fetchLineDataInit('ATM');
+    fetchLineDataInit('FX');
+  }
+
+  // 更新数据
+  function updateData() {
+    fetchPanelData('ATM');
+    fetchPanelData('FX');
+    fetchMapData();
+    fetchPieData1();
+    fetchPieData2();
+    fetchPieData3();
+    fetchLineData('ATM');
+    fetchLineData('FX');
   }
 
   // 定时器
   let timer: number | undefined;
   onMounted(() => {
-    updateData();
+    initData();
     
-    // 每10秒请求一次数据，实现动态刷新
-    timer = setInterval(() => {
+    // 每20秒请求一次数据，实现动态刷新
+    timer = window.setInterval(() => {
       updateData();
-    }, 10000);
+    }, 5000);
   });
 
   onUnmounted(() => {
@@ -229,7 +282,8 @@
 <style scoped>
 .modern-offline-bg {
   background: #e0e4ec42;
-  min-height: 100vh;
+  min-height: 100%;
+  overflow: hidden;
 }
 .modern-card {
   border-radius: 18px;

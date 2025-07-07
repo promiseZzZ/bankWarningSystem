@@ -14,7 +14,7 @@ const userRole = userStore.role;
 
 let filteredSidebarItems = sidebarItems;
 if (userRole === 1) {
-    filteredSidebarItems = sidebarItems.filter(item => item.header !== '账户管理' && item.title !== '账户管理');
+    filteredSidebarItems = sidebarItems.filter(item => item.header !== '信息管理' && item.title !== '账户管理' && item.title !== '节点管理');
 }
 const sidebarMenu = shallowRef(filteredSidebarItems);
 const sDrawer = ref(true);
@@ -63,7 +63,7 @@ const sDrawer = ref(true);
     </v-navigation-drawer>
 
     <!------Header-------->
-    <v-app-bar elevation="0" height="70" class="custom-app-bar">
+    <v-app-bar elevation="0" height="60" class="custom-app-bar">
         <div class="d-flex align-center justify-space-between w-100">
             <div class="d-flex align-center">
                 <v-btn class="sidebar-toggle-btn me-2" icon variant="text" @click="sDrawer = !sDrawer">
@@ -156,19 +156,22 @@ const sDrawer = ref(true);
 }
 
 .v-navigation-drawer.leftSidebar {
-    background: rgb(0, 20, 40) !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /*background: rgb(0, 20, 40) !important;*/
     border-radius: 0 0 16px 0;
     box-shadow: 2px 0 12px rgba(33, 150, 243, 0.08);
 }
 
 .custom-app-bar {
-    background: rgb(0 20 40); /* 浅蓝渐变 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /*background: rgb(0 20 40); /* 浅蓝渐变 */
     border-radius: 0 0 16px 0;
     box-shadow: 0 2px 8px rgba(33, 150, 243, 0.06);
 }
 
 .sidebar-logo-bar {
-    background: #596787b5;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /*background: #596787b5;*/
     padding: 20px 16px 20px 12px;
     min-height: 80px;
     box-shadow: none;

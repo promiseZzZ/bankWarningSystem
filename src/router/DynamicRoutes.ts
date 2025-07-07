@@ -56,6 +56,14 @@ export const dynamicRoutes: RouteRecordRaw[] = [
                 meta: {
                     roles: [2]
                 }
+            },
+            {
+                name: 'NodeManage',
+                path: '/main/nodeManage',
+                component: () => import('../views/dashboard/NodeManage.vue'),
+                meta: {
+                    roles: [2]
+                }
             }
         ]
 

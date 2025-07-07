@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { UserIcon} from 'vue-tabler-icons';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    router.push('/auth/login');
+}
 </script>
 
 <template>
@@ -15,18 +22,9 @@ import { UserIcon} from 'vue-tabler-icons';
                 </v-btn>
             </template>
             <v-sheet rounded="md" width="200" elevation="10" class="mt-2">
-                <v-list class="py-0" lines="one" density="compact">         
-                    <v-list-item value="item1" 
-                        color="primary"
-                        :to="{ path: '/main/ui/accountmanage' }"> 
-                        <template v-slot:prepend>
-                            <UserIcon stroke-width="1.5"  size="20"/>
-                        </template>
-                        <v-list-item-title class="pl-4 text-body-1">My Account</v-list-item-title>
-                    </v-list-item>
-                </v-list>
+
                 <div class="pt-4 pb-4 px-5 text-center">
-                    <v-btn to="/auth/login" color="primary" variant="outlined" block>Logout</v-btn>
+                    <v-btn to="/auth/login" color="primary" variant="outlined" block @click="logout">Logout</v-btn>
                 </div>
             </v-sheet>
         </v-menu>

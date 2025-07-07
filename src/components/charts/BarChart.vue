@@ -17,6 +17,7 @@ interface Props {
   xAxisName?: string
   yAxisName?: string
   color?: string[]
+  direction?: 'horizontal' | 'vertical' // 新增方向配置：horizontal为水平条形图，vertical为垂直条形图
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,7 +25,8 @@ const props = withDefaults(defineProps<Props>(), {
   title: '',
   xAxisName: '',
   yAxisName: '',
-  color: () => ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc']
+  color: () => ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
+  direction: 'horizontal' // 默认为水平条形图
 })
 
 const chartRef = ref<HTMLElement>()
@@ -47,69 +49,139 @@ const initChart = () => {
 const updateChart = () => {
   if (!chartInstance) return
 
-  const option: echarts.EChartsOption = {
-    title: {
-      text: props.title,
-      left: 'center',
-      textStyle: {
-        fontSize: 16,
-        fontWeight: 'bold'
-      }
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow'
-      },
-      formatter: (params: any) => {
-        const data = params[0]
-        return `${data.name}: ${data.value}`
-      }
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true
-    },
-    xAxis: {
-      type: 'value',
-      name: props.xAxisName,
-      nameLocation: 'middle',
-      nameGap: 30,
-      axisLabel: {
-        fontSize: 12
-      }
-    },
-    yAxis: {
-      type: 'category',
-      name: props.yAxisName,
-      nameLocation: 'middle',
-      nameGap: 50,
-      data: sortedData.value.map(item => item.name),
-      axisLabel: {
-        fontSize: 12,
-        width: 80,
-        overflow: 'truncate'
-      }
-    },
-    series: [
-      {
-        name: '数值',
-        type: 'bar',
-        data: sortedData.value.map(item => item.value),
-        itemStyle: {
-          color: (params: any) => {
-            return props.color[params.dataIndex % props.color.length]
-          }
-        },
-        label: {
-          show: true,
-          position: 'right',
-          formatter: '{c}'
+  let option: echarts.EChartsOption
+
+  if (props.direction === 'horizontal') {
+    // 水平条形图：x轴为数值，y轴为种类
+    option = {
+      title: {
+        text: props.title,
+        left: 'center',
+        textStyle: {
+          fontSize: 16,
+          fontWeight: 'bold'
         }
-      }
-    ]
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        formatter: (params: any) => {
+          const data = params[0]
+          return `${data.name}: ${data.value}`
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        name: props.xAxisName,
+        nameLocation: 'middle',
+        nameGap: 30,
+        axisLabel: {
+          fontSize: 12
+        }
+      },
+      yAxis: {
+        type: 'category',
+        name: props.yAxisName,
+        nameLocation: 'middle',
+        nameGap: 50,
+        data: sortedData.value.map(item => item.name),
+        axisLabel: {
+          fontSize: 12,
+          width: 80,
+          overflow: 'truncate'
+        }
+      },
+      series: [
+        {
+          name: '数值',
+          type: 'bar',
+          data: sortedData.value.map(item => item.value),
+          itemStyle: {
+            color: (params: any) => {
+              return props.color[params.dataIndex % props.color.length]
+            }
+          },
+          label: {
+            show: true,
+            position: 'right',
+            formatter: '{c}'
+          }
+        }
+      ]
+    }
+  } else {
+    // 垂直条形图：x轴为种类，y轴为数值
+    option = {
+      title: {
+        text: props.title,
+        left: 'center',
+        textStyle: {
+          fontSize: 16,
+          fontWeight: 'bold'
+        }
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        formatter: (params: any) => {
+          const data = params[0]
+          return `${data.name}: ${data.value}`
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        name: props.xAxisName,
+        nameLocation: 'middle',
+        nameGap: 30,
+        data: sortedData.value.map(item => item.name),
+        axisLabel: {
+          fontSize: 12,
+          rotate: 45
+        }
+      },
+      yAxis: {
+        type: 'value',
+        name: props.yAxisName,
+        nameLocation: 'middle',
+        nameGap: 50,
+        axisLabel: {
+          fontSize: 12
+        }
+      },
+      series: [
+        {
+          name: '数值',
+          type: 'bar',
+          data: sortedData.value.map(item => item.value),
+          itemStyle: {
+            color: (params: any) => {
+              return props.color[params.dataIndex % props.color.length]
+            }
+          },
+          label: {
+            show: true,
+            position: 'top',
+            formatter: '{c}'
+          }
+        }
+      ]
+    }
   }
 
   chartInstance.setOption(option)

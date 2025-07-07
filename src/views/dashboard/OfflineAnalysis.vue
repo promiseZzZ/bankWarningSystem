@@ -1,35 +1,34 @@
 <template>
-    <v-container fluid class="pa-6 modern-offline-bg">
+    <v-container fluid class="pa-4 modern-offline-bg" style="height: calc(100vh-60px); overflow: hidden;">
       <!-- 日期选择 -->
-      <v-row>
-        <v-col cols="12">
-          <v-dialog 
-          v-model="dateDialog" 
-          :close-on-content-click="false" 
-          location="bottom end"
-          elevation="12"
-          attach="body">
-            <template v-slot:activator="{ props}">
-              <v-btn size="large" rounded="lg" color="rgb(0 20 40)" v-bind="props">选择日期</v-btn>
-            </template>
-              <v-date-picker
-                hide-header
-                width="500px"
-                height="500px"
-                rounded="xl"
-
-                elevation="8"
-                v-model="currentDate"
-                @update:modelValue="onDateSelected"
-                max="2025-07-03"
-                min="2025-01-01"
-
-              />
-          </v-dialog>
-          <span class="current-date-title ml-4">当前数据日期为:</span>
-          <span class="current-date-value ml-4">{{ currentDate }}</span>
-          </v-col>
-        </v-row>
+          <v-menu
+                v-model="dateDialog"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ props }">
+                  <v-text-field
+                    v-model="currentDate"
+                    label="当前数据日期"
+                    readonly
+                    v-bind="props"
+                    clearable
+                    width="400px"
+                  >
+                    <template #append-inner>
+                      <v-icon>mdi-calendar</v-icon>
+                    </template>
+                  </v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="currentDate"
+                  @update:model-value="onDateSelected"
+                  title="选择日期"
+                  hide-header
+                />
+              </v-menu>
 
         <!--  上部分地图和柱状图 -->
         <v-row>
@@ -55,19 +54,19 @@
         </v-row>
 
         <!-- 下部分饼图 -->
-        <v-row class="mt-6">
+        <v-row class="mt-1">
             <v-col cols="4">
-                <v-card height="200" class="d-flex flex-column modern-card" elevation="8" hover>
+                <v-card height="190" class="d-flex flex-column modern-card" elevation="8" hover>
                     <PieChart :data="pieData1" :title="pieTitle1" />
                 </v-card>    
             </v-col>
             <v-col cols="4">
-                <v-card height="200" class="d-flex align-center justify-center modern-card" elevation="8" hover>
+                <v-card height="190" class="d-flex align-center justify-center modern-card" elevation="8" hover>
                     <PieChart :data="pieData2" :title="pieTitle2" />
                  </v-card>    
              </v-col>
              <v-col cols="4">
-                 <v-card height="200" class="d-flex align-center justify-center modern-card" elevation="8" hover>
+                 <v-card height="190" class="d-flex align-center justify-center modern-card" elevation="8" hover>
                      <PieChart :data="pieData3" :title="pieTitle3" />
                  </v-card>    
              </v-col>
@@ -87,12 +86,12 @@
   import {useUserStore} from '../../store/user';
   
 
- const currentDate = ref(formatDate(new Date(2025, 6, 1), 'yyyy-MM-dd'));
+ const currentDate = ref(formatDate(new Date(new Date().getTime() - 24 * 60 * 60 * 1000), 'yyyy-MM-dd'));
  const dateDialog = ref(false);
  const tempDate = ref(currentDate.value);
 
    // 地图数据
-  const mapData = ref([{name: '', value: 0}]);
+  const mapData = ref([{name: '', value: 0 as number | string}]);
 
   // 柱状图数据
   const barData1 = ref([]);
@@ -119,11 +118,42 @@
         location: '全国'
       });
       if (response.data) {
-        mapData.value = response.data.data;
+        // 处理地图数据，为没有数据的省份设置默认值
+        const processedData = processMapData(response.data.data);
+        mapData.value = processedData;
       }
     } catch (error) {
       console.error('获取数据失败:', error);
     }
+  }
+
+  // 处理地图数据，为没有数据的省份设置默认值
+  function processMapData(data: Array<{name: string, value: number}>) {
+    // 中国所有省份列表
+    const allProvinces = [
+      '北京', '天津', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江',
+      '上海', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南',
+      '湖北', '湖南', '广东', '广西', '海南', '重庆', '四川', '贵州',
+      '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '台湾',
+      '香港', '澳门','南海诸岛'
+    ];
+
+    // 创建省份数据映射
+    const dataMap = new Map();
+    data.forEach(item => {
+      dataMap.set(item.name, item.value);
+    });
+
+    // 为所有省份设置数据，没有数据的显示"无"
+    const processedData = allProvinces.map(province => {
+      const value = dataMap.get(province);
+      return {
+        name: province,
+        value: value !== undefined ? value : '无'
+      };
+    });
+
+    return processedData;
   }
 
   // 柱状图请求函数
@@ -210,9 +240,9 @@
       // 地图
       await fetchMapData('FX', currentDate.value, mapData)
       // 柱状图1
-      await fetchBarData('FX', currentDate.value, barData1)
+      await fetchBarData('ATM', currentDate.value, barData1)
       // 柱状图2
-      await fetchBarData('ATM', currentDate.value, barData2)
+      await fetchBarData('FX', currentDate.value, barData2)
       // 饼图1
       await fetchPieData1(currentDate.value, '全国', pieData1)
       // 饼图2
@@ -272,7 +302,7 @@
 .modern-offline-bg {
   background: #e0e4ec42;
   /* background: linear-gradient(135deg, #e3f2fd 0%, #f8fdff 100%); */
-  min-height: 100vh;
+  overflow: hidden;
 }
 .modern-card {
   border-radius: 18px;
@@ -281,64 +311,4 @@
   transition: box-shadow 0.2s;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px;
-}
-  
-.uploadfile {
-  height: 500px;
-  width: 1000px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-  
-  .result-item {
-    margin-bottom: 30px;
-  }
-  
-  .highlight-text {
-    font-size: 16px;
-    line-height: 1.8;
-    white-space: pre-wrap;
-  }
-  
-  .ant-btn-primary {
-    height: 40px;
-    padding: 0 30px;
-    font-size: 16px;
-  }
-
-.modern-date-btn {
-  font-weight: 600;
-  font-size: 16px;
-  letter-spacing: 1px;
-  padding: 0 24px;
-  height: 44px;
-  border-radius: 24px;
-  box-shadow: 0 2px 8px 0 rgba(33, 150, 243, 0.10);
-  background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
-  color: #fff;
-  transition: box-shadow 0.2s, background 0.2s;
-}
-.modern-date-btn:hover {
-  background: linear-gradient(90deg, #1565c0 0%, #64b5f6 100%);
-  box-shadow: 0 4px 16px 0 rgba(33, 150, 243, 0.18);
-}
-.current-date-title {
-  font-size: 20px;
-  color: #000000;
-  font-weight: 500;
-  margin-left: 16px;
-  letter-spacing: 1px;
-}
-.current-date-value {
-  font-size: 20px;
-  color: #1976d2;
-  font-weight: 500;
-}
 </style>

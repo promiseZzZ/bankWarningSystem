@@ -45,6 +45,7 @@ interface LineChartProps {
   yAxisName?: string
   xAxisName?: string
   smooth?: boolean
+  visualMap?: any
 }
 
 const props = withDefaults(defineProps<LineChartProps>(), {
@@ -83,6 +84,7 @@ const chartOptions = computed(() => ({
     type: 'value',
     name: props.yAxisName || ''
   },
+  visualMap: props.visualMap,
   series: props.series.map(s => ({
     name: s.name,
     type: 'line',

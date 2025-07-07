@@ -13,53 +13,82 @@ const emit = defineEmits(['provinceClick']);
 
 const props = defineProps<{
     geoJson: any,
-    data: Array<{name: string, value: number}>
+    data: Array<{name: string, value: number | string}>
 }>();
 
-const option = computed(() => ({
-  title: {
-    text: '外汇买入全国分布',
-    left: '0',
-  },
-  tooltip: {
-    trigger: 'item',
-    formatter: '{b}: {c}'
-  },
-
-  visualMap: {
-    min: 0,
-    max: 1000000,
-    left: 'left',
-    top: 'bottom',
-    text: ['高', '低'],
-    inRange: { color: ['#e0f3f8', '#abd9e9', '#74add1', '#4575b4'] },
-    show: true
-  },
-  series: [
-    {
-      itemStyle: {
-        areaColor: '#FFFFFF',
-        borderColor: '#009ce0',
-        borderWidth: 0.5,
-      },
-      zoom:1.8,
-      center: [104.114129, 37.550339],
-      emphasis: {
+const option = computed(() => {
+  // 处理数据，为"无"数据的省份设置特殊样式
+  const processedData = props.data.map(item => {
+    if (item.value === '无') {
+      return {
+        ...item,
         itemStyle: {
-          areaColor: '#009ce0',
-          borderColor: '#009ce0',
-          borderWidth: 0.5
+          areaColor: '#f5f5f5',
+          borderColor: '#cccccc',
+          borderWidth: 0.5,
         }
-      },
-      name: '省份数据',
-      type: 'map',
-      map: 'china',
-      roam: true,
-      label: { show: true },
-      data: props.data
+      };
     }
-  ]
-}))
+    return item;
+  });
+
+  return {
+    title: {
+      text: '外汇买入全国分布',
+      left: '0',
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter: function(params: any) {
+        if (params.value === '无') {
+          return `${params.name}: 无数据`;
+        }
+        return `${params.name}: ${params.value}`;
+      }
+    },
+    visualMap: {
+      min: 0,
+      max: 1000000,
+      left: 'left',
+      top: 'bottom',
+      text: ['高', '低'],
+      inRange: { color: ['#e0f3f8', '#abd9e9', '#74add1', '#4575b4'] },
+      show: true
+    },
+    series: [
+      {
+        itemStyle: {
+          areaColor: '#FFFFFF',
+          borderColor: '#009ce0',
+          borderWidth: 0.5,
+        },
+        zoom: 1.8,
+        center: [104.114129, 37.550339],
+        emphasis: {
+          itemStyle: {
+            areaColor: '#009ce0',
+            borderColor: '#009ce0',
+            borderWidth: 0.5
+          }
+        },
+        name: '省份数据',
+        type: 'map',
+        map: 'china',
+        roam: true,
+        label: { 
+          show: true,
+          formatter: function(params: any) {
+            if (params.value === '无') {
+              return '无';
+            }
+            return params.name;
+          }
+        },
+        data: processedData
+      }
+    ]
+  };
+});
 
 
 //注册地图

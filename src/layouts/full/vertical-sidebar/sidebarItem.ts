@@ -1,5 +1,5 @@
 import {UserIcon,HeartRateMonitorIcon, ChartDots2Icon, 
-    ChecklistIcon, AntennaBars5Icon, AntennaBarsOffIcon,} from 'vue-tabler-icons';
+    ChecklistIcon, AntennaBars5Icon, AntennaBarsOffIcon, Devices2Icon} from 'vue-tabler-icons';
 
 export interface menu {
     header?: string;
@@ -24,14 +24,14 @@ const sidebarItem: menu[] = [
         to: '/main/performanceMonitoring'
     },
     {
-        title: '性能分析',
-        icon: ChartDots2Icon,
-        to: '/main/performanceAnalysis'
-    },
-    {
         title: '告警记录',
         icon: ChecklistIcon,
         to: '/main/alarmRecord'
+    },
+    {
+        title: '性能分析',
+        icon: ChartDots2Icon,
+        to: '/main/performanceAnalysis'
     },
     { header: '数据分析' },
     {
@@ -44,12 +44,18 @@ const sidebarItem: menu[] = [
         icon: AntennaBars5Icon,
         to: '/main/realTimeAnalysis'
     },
-    { header: '账户管理'},
+    { header: '信息管理'},
     {
         title: '账户管理',
         icon: UserIcon,
         to: '/main/accountManage'
+    },
+    {
+        title: '节点管理',
+        icon: Devices2Icon,
+        to: '/main/nodeManage'
     }
+
 ];
 
 export default sidebarItem;

@@ -16,6 +16,7 @@ import { axiosInstance } from './utils/request';
 import dayjs from 'dayjs';
 import VueECharts from 'vue-echarts';
 import 'echarts'
+import '@mdi/font/css/materialdesignicons.css'
 
 
 const pinia = createPinia();
