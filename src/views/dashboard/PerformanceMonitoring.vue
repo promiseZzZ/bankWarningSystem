@@ -6,27 +6,27 @@
         <v-card class="pa-6 modern-card" elevation="8" hover>
           <v-row align="center" justify="space-around">
             <v-col cols="auto">
-              <div class="perf-item" :class="getPerformanceClass(performanceData.ATM01)">
+              <div class="perf-item" :class="getPerformanceClass1(performanceData.ATM01)">
                 <span class="perf-label">ATM01:</span>
-                <span class="perf-value" :class="getPerformanceClass(performanceData.ATM01)">{{ performanceData.ATM01  }}ms</span>
+                <span class="perf-value" :class="getPerformanceClass1(performanceData.ATM01)">{{ performanceData.ATM01  }}ms</span>
               </div>
             </v-col>
             <v-col cols="auto">
-              <div class="perf-item" :class="getPerformanceClass(performanceData.ATM02)">
+              <div class="perf-item" :class="getPerformanceClass2(performanceData.ATM02)">
                 <span class="perf-label">ATM02:</span>
-                <span class="perf-value" :class="getPerformanceClass(performanceData.ATM02)">{{ performanceData.ATM02 }}ms</span>
+                <span class="perf-value" :class="getPerformanceClass2(performanceData.ATM02)">{{ performanceData.ATM02 }}ms</span>
               </div>
             </v-col>
             <v-col cols="auto">
-              <div class="perf-item" :class="getPerformanceClass(performanceData.ATM03)">
+              <div class="perf-item" :class="getPerformanceClass3(performanceData.ATM03)">
                 <span class="perf-label">ATM03:</span>
-                <span class="perf-value" :class="getPerformanceClass(performanceData.ATM03)">{{ performanceData.ATM03 }}ms</span>
+                <span class="perf-value" :class="getPerformanceClass3(performanceData.ATM03)">{{ performanceData.ATM03 }}ms</span>
               </div>
             </v-col>
             <v-col cols="auto">
-              <div class="perf-item" :class="getPerformanceClass(performanceData.FX)">
+              <div class="perf-item" :class="getPerformanceClass4(performanceData.FX)">
                 <span class="perf-label">FX:</span>
-                <span class="perf-value" :class="getPerformanceClass(performanceData.FX)">{{ performanceData.FX }}ms</span>
+                <span class="perf-value" :class="getPerformanceClass4(performanceData.FX)">{{ performanceData.FX }}ms</span>
               </div>
             </v-col>
             <!-- 添加抽屉切换按钮 -->
@@ -52,6 +52,25 @@
           <div class="fill-height d-flex align-center justify-center grey--text">
                     <MultiLineChart :xAxis="MultiLineData.xData" :series="MultiLineData.series"
              :title="charts[0].title"
+             :visualMap="{
+              show: true,
+              dimension: 1,
+              pieces: [
+                {
+                  lt: 30,
+                  color: '#27ae60'
+                },
+                {
+                  gt: 30,
+                  lt: 45,
+                  color: '#ffc107'
+                },
+                {
+                  gt: 45,
+                  color: '#e74c3c'
+                }
+              ]
+            }"
            />
           </div>
         </v-card>
@@ -66,16 +85,16 @@
             dimension: 1,
             pieces: [
               {
-                lt: 4000,
+                lt: 30,
                 color: '#27ae60'
               },
               {
-                gt: 4000,
-                lt: 7000,
+                gt: 30,
+                lt: 45,
                 color: '#ffc107' 
               },
               {
-                gt: 7000,
+                gt: 45,
                 color: '#e74c3c'
               }
             ]
@@ -94,16 +113,16 @@
             dimension: 1,
             pieces: [
               {
-                lt: 4000,
+                lt: 400,
                 color: '#27ae60'
               },
               {
-                gt: 4000,
-                lt: 7000,
+                gt: 400,
+                lt: 475,
                 color: '#ffc107' 
               },
               {
-                gt: 7000,
+                gt: 475,
                 color: '#e74c3c'
               }
             ]
@@ -126,16 +145,16 @@
             dimension: 1,
             pieces: [
               {
-                lt: 4000,
+                lt: 400,
                 color: '#27ae60'
               },
               {
-                gt: 4000,
-                lt: 7000,
+                gt: 400,
+                lt: 475,
                 color: '#ffc107' 
               },
               {
-                gt: 7000,
+                gt: 475,
                 color: '#e74c3c'
               }
             ]
@@ -154,16 +173,16 @@
             dimension: 1,
             pieces: [
               {
-                lt: 4000,
+                lt: 300,
                 color: '#27ae60'
               },
               {
-                gt: 4000,
-                lt: 7000,
+                gt: 300,
+                lt: 350,
                 color: '#ffc107' 
               },
               {
-                gt: 7000,
+                gt: 350,
                 color: '#e74c3c'
               }
             ]
@@ -182,16 +201,16 @@
             dimension: 1,
             pieces: [
               {
-                lt: 4000,
+                lt: 400,
                 color: '#27ae60'
               },
               {
-                gt: 4000,
-                lt: 7000,
+                gt: 400,
+                lt: 475,
                 color: '#ffc107' 
               },
               {
-                gt: 7000,
+                gt: 475,
                 color: '#e74c3c'
               }
             ]
@@ -246,7 +265,7 @@
                       <v-icon color="blue">mdi-gate</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>ATMEntry01: {{ getPerformanceClass(performanceData.ATM01) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATM01) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>ATMEntry01: {{ getPerformanceClass5(performanceData.ATM01) === 'normal' ? '正常' : getPerformanceClass5(performanceData.ATM01) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.ATMEntry01 }}ms</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -255,7 +274,7 @@
                       <v-icon color="orange">mdi-server</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>ATMServer: {{ getPerformanceClass(performanceData.ATMServer) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATMServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>ATMServer: {{ getPerformanceClass5(performanceData.ATMServer) === 'normal' ? '正常' : getPerformanceClass5(performanceData.ATMServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.ATMServer }}ms</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -264,7 +283,7 @@
                       <v-icon color="purple">mdi-cog</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>ATMCoreService: {{ getPerformanceClass(performanceData.CoreService) === 'normal' ? '正常' : getPerformanceClass(performanceData.CoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                        <v-list-item-title>ATMCoreService: {{ getPerformanceClass6(performanceData.CoreService) === 'normal' ? '正常' : getPerformanceClass6(performanceData.CoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.CoreService }}ms</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -295,7 +314,7 @@
                       <v-icon color="blue">mdi-gate</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>ATMEntry02: {{ getPerformanceClass(performanceData.ATM02) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATM02) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>ATMEntry02: {{ getPerformanceClass5(performanceData.ATM02) === 'normal' ? '正常' : getPerformanceClass5(performanceData.ATM02) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.ATMEntry02 }}ms</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -304,7 +323,7 @@
                       <v-icon color="orange">mdi-server</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>ATMServer: {{ getPerformanceClass(performanceData.ATMServer) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATMServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>ATMServer: {{ getPerformanceClass5(performanceData.ATMServer) === 'normal' ? '正常' : getPerformanceClass5(performanceData.ATMServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.ATMServer }}ms</v-list-item-subtitle>                </v-list-item-content>
                   </v-list-item>
                   <v-list-item>
@@ -312,7 +331,7 @@
                       <v-icon color="purple">mdi-cog</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>ATMCoreService: {{ getPerformanceClass(performanceData.CoreService) === 'normal' ? '正常' : getPerformanceClass(performanceData.CoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>ATMCoreService: {{ getPerformanceClass6(performanceData.CoreService) === 'normal' ? '正常' : getPerformanceClass6(performanceData.CoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.CoreService }}ms</v-list-item-subtitle>                </v-list-item-content>
                   </v-list-item>
                 </v-list>
@@ -344,7 +363,7 @@
                       <v-icon color="blue">mdi-gate</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>ATMEntry03: {{ getPerformanceClass(performanceData.ATM03) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATM03) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>ATMEntry03: {{ getPerformanceClass5(performanceData.ATM03) === 'normal' ? '正常' : getPerformanceClass5(performanceData.ATM03) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.ATMEntry03 }}ms</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -353,7 +372,7 @@
                       <v-icon color="orange">mdi-server</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>ATMServer: {{ getPerformanceClass(performanceData.ATMServer) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATMServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>ATMServer: {{ getPerformanceClass5(performanceData.ATMServer) === 'normal' ? '正常' : getPerformanceClass5(performanceData.ATMServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.ATMServer }}ms</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -362,7 +381,7 @@
                       <v-icon color="purple">mdi-cog</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>ATMCoreService: {{ getPerformanceClass(performanceData.CoreService) === 'normal' ? '正常' : getPerformanceClass(performanceData.CoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>ATMCoreService: {{ getPerformanceClass6(performanceData.CoreService) === 'normal' ? '正常' : getPerformanceClass6(performanceData.CoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.CoreService }}ms</v-list-item-subtitle>                </v-list-item-content>
                   </v-list-item>
                 </v-list>
@@ -392,7 +411,7 @@
                       <v-icon color="blue">mdi-gate</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>FXEntry: {{ getPerformanceClass(performanceData.FX) === 'normal' ? '正常' : getPerformanceClass(performanceData.FX) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>FXEntry: {{ getPerformanceClass6(performanceData.FX) === 'normal' ? '正常' : getPerformanceClass6(performanceData.FX) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.FXEntry }}ms</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -401,7 +420,7 @@
                       <v-icon color="orange">mdi-server</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>FXServer: {{ getPerformanceClass(performanceData.FXServer) === 'normal' ? '正常' : getPerformanceClass(performanceData.FXServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>FXServer: {{ getPerformanceClass7(performanceData.FXServer) === 'normal' ? '正常' : getPerformanceClass7(performanceData.FXServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.FXServer }}ms</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -410,7 +429,7 @@
                       <v-icon color="purple">mdi-cog</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>FXCoreService: {{ getPerformanceClass(performanceData.FXCoreService) === 'normal' ? '正常' : getPerformanceClass(performanceData.FXCoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-title>FXCoreService: {{ getPerformanceClass6(performanceData.FXCoreService) === 'normal' ? '正常' : getPerformanceClass6(performanceData.FXCoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
                       <v-list-item-subtitle>响应时间: {{ performanceData.FXCoreService }}ms</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -506,15 +525,75 @@ const performanceData = ref({
 });
 
 // 根据响应时间值返回对应的CSS类名
-const getPerformanceClass = (value: number) => {
-  if (value < 500) {
+const getPerformanceClass1 = (value: number) => {
+  if (value < 510) {
     return 'normal'; // 正常 - 蓝色
-  } else if (value < 7000) {
+  } else if (value < 560) {
     return 'warning'; // 警告 - 橙色
   } else {
     return 'danger'; // 危险 - 红色
   }
 };
+
+const getPerformanceClass2 = (value: number) => {
+  if (value < 505) {
+    return 'normal'; // 正常 - 蓝色
+  } else if (value < 565) {
+    return 'warning'; // 警告 - 橙色
+  } else {
+    return 'danger'; // 危险 - 红色
+  }
+};
+
+const getPerformanceClass3 = (value: number) => {
+  if (value < 520) {
+    return 'normal'; // 正常 - 蓝色
+  } else if (value < 570) {
+    return 'warning'; // 警告 - 橙色
+  } else {
+    return 'danger'; // 危险 - 红色
+  }
+};
+
+const getPerformanceClass4 = (value: number) => {
+  if (value < 1000) {
+    return 'normal'; // 正常 - 蓝色
+  } else if (value < 1300) {
+    return 'warning'; // 警告 - 橙色
+  } else {
+    return 'danger'; // 危险 - 红色
+  }
+};
+
+const getPerformanceClass5 = (value: number) => {
+  if (value < 30) {
+    return 'normal'; // 正常 - 蓝色
+  } else if (value < 45) {
+    return 'warning'; // 警告 - 橙色
+  } else {
+    return 'danger'; // 危险 - 红色
+  }
+};
+
+const getPerformanceClass6 = (value: number) => {
+  if (value < 400) {
+    return 'normal'; // 正常 - 蓝色
+  } else if (value < 475) {
+    return 'warning'; // 警告 - 橙色
+  } else {
+    return 'danger'; // 危险 - 红色
+  }
+};
+
+const getPerformanceClass7 = (value: number) => { 
+  if(value < 300){
+    return 'normal';
+  }else if(value < 350){
+    return 'warning';
+  }else{
+    return 'danger';
+  }
+}
 
 async function getNodeSummary() {
   const response = await axiosInstance.get('/node-monitor/getNodeSummary');
@@ -578,7 +657,7 @@ async function fetchLineDataInit(nodeName: string) {
           performanceData.value.FXEntry = response.data.data.data[response.data.data.data.length - 1];
           break;
         case 'FX_Server_01':
-          lineData3.value.xData = response.data.data.xdata;
+          lineData4.value.xData = response.data.data.xdata;
           lineData4.value.series = response.data.data.data;
           performanceData.value.FXServer = response.data.data.data[response.data.data.data.length - 1];
           break;

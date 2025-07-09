@@ -482,7 +482,7 @@ onMounted(() => {
   // 设置默认状态为"待处理"
   filters.value.status = '待处理';
   fetchNodeOptions();
-  fetchTableData({ page: 3, size: 5, status: 0 });
+  fetchTableData(buildTableParams());
 });
 
 </script>

@@ -48,7 +48,7 @@ const option = computed(() => {
     },
     visualMap: {
       min: 0,
-      max: 1000000,
+      max: 5000000,
       left: 'left',
       top: 'bottom',
       text: ['高', '低'],

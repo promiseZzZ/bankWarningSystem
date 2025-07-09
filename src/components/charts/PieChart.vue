@@ -17,17 +17,12 @@ const props = defineProps<{
 
 const option = computed(() => ({
     color: props.colors || [
-        '#1976D2', // 主蓝色
-        '#42A5F5', // 浅蓝色
-        '#64B5F6', // 天蓝色
-        '#90CAF9', // 淡蓝色
-        '#BBDEFB', // 极浅蓝
-        '#2196F3', // 标准蓝
-        '#1E88E5', // 深蓝色
-        '#1565C0', // 更深蓝
-        '#0D47A1', // 深蓝灰
-        '#E3F2FD'  // 背景蓝
-    ],
+    '#FF8C00', // 深橙
+    '#4682B4', // 钢蓝
+    '#3CB371', // 中等海洋绿
+    '#C71585', // 中紫红
+    '#FFD700'  // 金黄
+],
     labelLine: {show: false},
     label: {show: false},
     tooltip : {

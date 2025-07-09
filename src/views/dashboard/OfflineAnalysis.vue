@@ -103,7 +103,6 @@
   const pieData3 = ref([{name: '', value: 0}]);
 
   // 饼图标题
-
   const pieTitle1 = ref('全国外汇交易用途分布');
   const pieTitle2 = ref('全国外汇交易年龄分布');
   const pieTitle3 = ref('全国外汇交易币种分布');
