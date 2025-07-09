@@ -28,6 +28,12 @@ export const useUserStore = defineStore('user', {
         },
         setUser(newUser: string) {
             this.username = newUser;
+        },
+        logout() {
+            this.$reset();
+            this.token = '';
+            this.role = 0;
+            this.isRolesLoaded = false;
         }
     },
     persist: true

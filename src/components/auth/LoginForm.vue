@@ -41,10 +41,10 @@ async function signin() {
       if(response.data.status === 0){
 
         // 存储token到localStorage
-        localStorage.setItem('token', response.data.data.token);
+        userStore.setToken(response.data.data.token);
 
         //存储role到LocalStorage
-        localStorage.setItem('role', response.data.code);
+        userStore.setRole(response.data.code);
 
         await nextTick();
 
