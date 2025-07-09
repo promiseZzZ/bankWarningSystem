@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { UserIcon} from 'vue-tabler-icons';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 function logout() {

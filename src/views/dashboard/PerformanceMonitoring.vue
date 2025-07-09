@@ -48,7 +48,7 @@
     <!-- 折线图网格 -->
     <v-row>
       <v-col cols="4">
-        <v-card  height="260" class="pa-6 modern-card" elevation="8" hover>
+        <v-card  height="280" class="pa-6 modern-card" elevation="8" hover>
           <div class="fill-height d-flex align-center justify-center grey--text">
                     <MultiLineChart :xAxis="MultiLineData.xData" :series="MultiLineData.series"
              :title="charts[0].title"
@@ -57,7 +57,7 @@
         </v-card>
       </v-col>
       <v-col cols="4">
-        <v-card height="260" class="pa-6 modern-card" elevation="8" hover>
+        <v-card height="280" class="pa-6 modern-card" elevation="8" hover>
           <div class="fill-height d-flex align-center justify-center grey--text">
           <LineChart :xData="lineData1.xData" :series="[{name: 'ATMService', data: lineData1.series}]"
           :title="charts[1].title"
@@ -85,7 +85,7 @@
         </v-card>
       </v-col>
       <v-col cols="4">
-        <v-card height="260" class="pa-6 modern-card" elevation="8" hover>
+        <v-card height="280" class="pa-6 modern-card" elevation="8" hover>
           <div class="fill-height d-flex align-center justify-center grey--text">
           <LineChart :xData="lineData2.xData" :series="[{name: 'CoreService', data: lineData2.series}]"
           :title="charts[2].title"
@@ -117,7 +117,7 @@
         <!-- 折线图网格 -->
         <v-row class="mt-6">
       <v-col cols="4">
-        <v-card height="260" class="pa-6 modern-card" elevation="8" hover>
+        <v-card height="280" class="pa-6 modern-card" elevation="8" hover>
           <div class="fill-height d-flex align-center justify-center grey--text">
             <LineChart :xData="lineData3.xData" :series="[{name: 'FXEntry', data: lineData3.series}]"
             :title="charts[3].title"
@@ -145,7 +145,7 @@
         </v-card>
       </v-col>
       <v-col cols="4">
-        <v-card height="260" class="pa-6 modern-card" elevation="8" hover>
+        <v-card height="280" class="pa-6 modern-card" elevation="8" hover>
           <div class="fill-height d-flex align-center justify-center grey--text">
           <LineChart :xData="lineData4.xData" :series="[{name: 'FXService', data: lineData4.series}]"
           :title="charts[4].title"
@@ -173,7 +173,7 @@
         </v-card>
       </v-col>
       <v-col cols="4">
-        <v-card height="260" class="pa-6 modern-card" elevation="8" hover>
+        <v-card height="280" class="pa-6 modern-card" elevation="8" hover>
           <div class="fill-height d-flex align-center justify-center grey--text"> 
           <LineChart :xData="lineData5.xData" :series="[{name: 'FXCoreService', data: lineData5.series}]"
           :title="charts[5].title"
@@ -207,14 +207,14 @@
       v-model="drawer"
       location="right"
       temporary
-      width="400"
+      width="600"
       class="machine-drawer"
     >
       <v-card class="drawer-header" flat>
         <v-card-title class="d-flex align-center justify-space-between">
           <span class="drawer-title">
-            <v-icon class="mr-2">mdi-server</v-icon>
-            物理机信息
+            <v-icon class="mr-2">mdi-cube-outline</v-icon>
+            系统详情
           </span>
         </v-card-title>
       </v-card>
@@ -222,161 +222,203 @@
       <v-divider></v-divider>
 
       <v-card-text class="drawer-content">
-        <!-- ATM物理机信息 -->
-        <v-card class="machine-card mb-4" elevation="4">
-          <v-card-title class="machine-title">
-            <v-icon class="mr-2" color="blue">mdi-desktop-tower</v-icon>
-            ATM物理机
-          </v-card-title>
-          <v-card-text>
-            <v-list dense>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="green">mdi-circle</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>状态: 运行中</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="blue">mdi-cpu-64-bit</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>CPU使用率: {{ atmMachineInfo.cpuUsage }}%</v-list-item-title>
-                  <v-progress-linear
-                    :value="atmMachineInfo.cpuUsage"
-                    color="blue"
-                    height="8"
-                    rounded
-                  ></v-progress-linear>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="orange">mdi-memory</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>内存使用率: {{ atmMachineInfo.memoryUsage }}%</v-list-item-title>
-                  <v-progress-linear
-                    :value="atmMachineInfo.memoryUsage"
-                    color="orange"
-                    height="8"
-                    rounded
-                  ></v-progress-linear>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="purple">mdi-harddisk</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>磁盘使用率: {{ atmMachineInfo.diskUsage }}%</v-list-item-title>
-                  <v-progress-linear
-                    :value="atmMachineInfo.diskUsage"
-                    color="purple"
-                    height="8"
-                    rounded
-                  ></v-progress-linear>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="red">mdi-thermometer</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>温度: {{ atmMachineInfo.temperature }}°C</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="cyan">mdi-network</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>网络状态: {{ atmMachineInfo.networkStatus }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-        </v-card>
-
-        <!-- FX物理机信息 -->
-        <v-card class="machine-card" elevation="4">
-          <v-card-title class="machine-title">
-            <v-icon class="mr-2" color="green">mdi-desktop-tower</v-icon>
-            FX物理机
-          </v-card-title>
-          <v-card-text>
-            <v-list dense>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="green">mdi-circle</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>状态: 运行中</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="blue">mdi-cpu-64-bit</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>CPU使用率: {{ fxMachineInfo.cpuUsage }}%</v-list-item-title>
-                  <v-progress-linear
-                    :value="fxMachineInfo.cpuUsage"
-                    color="blue"
-                    height="8"
-                    rounded
-                  ></v-progress-linear>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="orange">mdi-memory</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>内存使用率: {{ fxMachineInfo.memoryUsage }}%</v-list-item-title>
-                  <v-progress-linear
-                    :value="fxMachineInfo.memoryUsage"
-                    color="orange"
-                    height="8"
-                    rounded
-                  ></v-progress-linear>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="purple">mdi-harddisk</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>磁盘使用率: {{ fxMachineInfo.diskUsage }}%</v-list-item-title>
-                  <v-progress-linear
-                    :value="fxMachineInfo.diskUsage"
-                    color="purple"
-                    height="8"
-                    rounded
-                  ></v-progress-linear>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="red">mdi-thermometer</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>温度: {{ fxMachineInfo.temperature }}°C</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="cyan">mdi-network</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>网络状态: {{ fxMachineInfo.networkStatus }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-        </v-card>
+        <v-row>
+          <v-col cols="6">
+            <!-- ATM01模块 -->
+            <v-card class="machine-card mb-4" elevation="4">
+              <v-card-title class="machine-title">
+                <v-icon class="mr-2" color="blue">mdi-cube-outline</v-icon>
+                ATM01
+              </v-card-title>
+              <v-card-text>
+                <v-list dense>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="green">mdi-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>整体状态: 运行中</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider class="my-2"></v-divider>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="blue">mdi-gate</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>ATMEntry01: {{ getPerformanceClass(performanceData.ATM01) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATM01) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.ATMEntry01 }}ms</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="orange">mdi-server</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>ATMServer: {{ getPerformanceClass(performanceData.ATMServer) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATMServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.ATMServer }}ms</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="purple">mdi-cog</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>ATMCoreService: {{ getPerformanceClass(performanceData.CoreService) === 'normal' ? '正常' : getPerformanceClass(performanceData.CoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.CoreService }}ms</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="6">
+            <!-- ATM02模块 -->
+            <v-card class="machine-card mb-4" elevation="4">
+              <v-card-title class="machine-title">
+                <v-icon class="mr-2" color="green">mdi-cube-outline</v-icon>
+                ATM02
+              </v-card-title>
+              <v-card-text>
+                <v-list dense>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="green">mdi-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>整体状态: 运行中</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider class="my-2"></v-divider>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="blue">mdi-gate</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>ATMEntry02: {{ getPerformanceClass(performanceData.ATM02) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATM02) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.ATMEntry02 }}ms</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="orange">mdi-server</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>ATMServer: {{ getPerformanceClass(performanceData.ATMServer) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATMServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.ATMServer }}ms</v-list-item-subtitle>                </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="purple">mdi-cog</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>ATMCoreService: {{ getPerformanceClass(performanceData.CoreService) === 'normal' ? '正常' : getPerformanceClass(performanceData.CoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.CoreService }}ms</v-list-item-subtitle>                </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="6">
+            <!-- ATM03模块 -->
+            <v-card class="machine-card mb-4" elevation="4">
+              <v-card-title class="machine-title">
+                <v-icon class="mr-2" color="orange">mdi-cube-outline</v-icon>
+                ATM03
+              </v-card-title>
+              <v-card-text>
+                <v-list dense>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="green">mdi-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>整体状态: 运行中</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider class="my-2"></v-divider>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="blue">mdi-gate</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>ATMEntry03: {{ getPerformanceClass(performanceData.ATM03) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATM03) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.ATMEntry03 }}ms</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="orange">mdi-server</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>ATMServer: {{ getPerformanceClass(performanceData.ATMServer) === 'normal' ? '正常' : getPerformanceClass(performanceData.ATMServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.ATMServer }}ms</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="purple">mdi-cog</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>ATMCoreService: {{ getPerformanceClass(performanceData.CoreService) === 'normal' ? '正常' : getPerformanceClass(performanceData.CoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.CoreService }}ms</v-list-item-subtitle>                </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="6">
+            <!-- FX模块 -->
+            <v-card class="machine-card" elevation="4">
+              <v-card-title class="machine-title">
+                <v-icon class="mr-2" color="purple">mdi-cube-outline</v-icon>
+                FX
+              </v-card-title>
+              <v-card-text>
+                <v-list dense>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="green">mdi-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>整体状态: 运行中</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider class="my-2"></v-divider>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="blue">mdi-gate</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>FXEntry: {{ getPerformanceClass(performanceData.FX) === 'normal' ? '正常' : getPerformanceClass(performanceData.FX) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.FXEntry }}ms</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="orange">mdi-server</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>FXServer: {{ getPerformanceClass(performanceData.FXServer) === 'normal' ? '正常' : getPerformanceClass(performanceData.FXServer) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.FXServer }}ms</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="purple">mdi-cog</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>FXCoreService: {{ getPerformanceClass(performanceData.FXCoreService) === 'normal' ? '正常' : getPerformanceClass(performanceData.FXCoreService) === 'warning' ? '警告' : '异常' }}</v-list-item-title>
+                      <v-list-item-subtitle>响应时间: {{ performanceData.FXCoreService }}ms</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-navigation-drawer>
   </v-container>
@@ -390,39 +432,6 @@ import MultiLineChart from '../../components/charts/MultiLineChart.vue';
 
 // 抽屉状态
 const drawer = ref(false);
-
-// ATM物理机信息
-const atmMachineInfo = ref({
-  cpuUsage: 45,
-  memoryUsage: 62,
-  diskUsage: 38,
-  temperature: 42,
-  networkStatus: '正常'
-});
-
-// FX物理机信息
-const fxMachineInfo = ref({
-  cpuUsage: 38,
-  memoryUsage: 55,
-  diskUsage: 42,
-  temperature: 39,
-  networkStatus: '正常'
-});
-
-// 模拟更新物理机信息
-function updateMachineInfo() {
-  // ATM物理机信息更新
-  atmMachineInfo.value.cpuUsage = Math.floor(Math.random() * 30) + 30; // 30-60%
-  atmMachineInfo.value.memoryUsage = Math.floor(Math.random() * 25) + 50; // 50-75%
-  atmMachineInfo.value.diskUsage = Math.floor(Math.random() * 20) + 30; // 30-50%
-  atmMachineInfo.value.temperature = Math.floor(Math.random() * 15) + 35; // 35-50°C
-
-  // FX物理机信息更新
-  fxMachineInfo.value.cpuUsage = Math.floor(Math.random() * 25) + 25; // 25-50%
-  fxMachineInfo.value.memoryUsage = Math.floor(Math.random() * 20) + 45; // 45-65%
-  fxMachineInfo.value.diskUsage = Math.floor(Math.random() * 15) + 35; // 35-50%
-  fxMachineInfo.value.temperature = Math.floor(Math.random() * 12) + 32; // 32-44°C
-}
 
 //折线图数据
 const MultiLineData = ref<{
@@ -485,7 +494,15 @@ const performanceData = ref({
   ATM01: 0,
   ATM02: 0,
   ATM03: 0,
-  FX: 0
+  FX: 0,
+  ATMEntry01: 0,
+  ATMEntry02: 0,
+  ATMEntry03: 0,
+  ATMServer: 0,
+  CoreService: 0,
+  FXEntry: 0,
+  FXServer: 0,
+  FXCoreService: 0
 });
 
 // 根据响应时间值返回对应的CSS类名
@@ -535,32 +552,40 @@ async function fetchLineDataInit(nodeName: string) {
       switch (nodeName) {
         case 'ATM_Entry_01':
           MultiLineData.value.series[0].data = response.data.data.data; 
+          performanceData.value.ATMEntry01 = response.data.data.data[response.data.data.data.length - 1];
           break;
         case 'ATM_Entry_02':
           MultiLineData.value.series[1].data = response.data.data.data; 
+          performanceData.value.ATMEntry02 = response.data.data.data[response.data.data.data.length - 1];
           break;  
         case 'ATM_Entry_03':
           MultiLineData.value.series[2].data = response.data.data.data; 
+          performanceData.value.ATMEntry03 = response.data.data.data[response.data.data.data.length - 1];
           break;
         case 'ATM_Server_01':
           lineData1.value.xData = response.data.data.xdata;
           lineData1.value.series = response.data.data.data;
+          performanceData.value.ATMServer = response.data.data.data[response.data.data.data.length - 1];
           break;
         case 'Core_Service_01':
           lineData2.value.xData = response.data.data.xdata;
           lineData2.value.series = response.data.data.data;
+          performanceData.value.CoreService = response.data.data.data[response.data.data.data.length - 1];
           break;
         case 'FX_Entry_01':
           lineData3.value.xData = response.data.data.xdata;
           lineData3.value.series = response.data.data.data;
+          performanceData.value.FXEntry = response.data.data.data[response.data.data.data.length - 1];
           break;
         case 'FX_Server_01':
           lineData3.value.xData = response.data.data.xdata;
           lineData4.value.series = response.data.data.data;
+          performanceData.value.FXServer = response.data.data.data[response.data.data.data.length - 1];
           break;
-        case 'Core_Entry_01':
+        case 'FX_Core_01':
           lineData5.value.xData = response.data.data.xdata;
           lineData5.value.series = response.data.data.data;
+          performanceData.value.FXCoreService = response.data.data.data[response.data.data.data.length - 1];
           break;
       }
     }
@@ -594,6 +619,7 @@ async function getNodeMonitorData(nodeName: string) {
           MultiLineData.value.series[0].data[MultiLineData.value.series[0].data.length - 1] !== latestData){
             MultiLineData.value.series[0].data.shift();
             MultiLineData.value.series[0].data.push(latestData);
+            performanceData.value.ATMEntry01 = latestData;
           }
           break;
         case 'ATM_Entry_02':
@@ -601,6 +627,7 @@ async function getNodeMonitorData(nodeName: string) {
           MultiLineData.value.series[1].data[MultiLineData.value.series[1].data.length - 1] !== latestData){
             MultiLineData.value.series[1].data.shift();
             MultiLineData.value.series[1].data.push(latestData);
+            performanceData.value.ATMEntry02 = latestData;
           }
           break;
         case 'ATM_Entry_03':
@@ -608,6 +635,7 @@ async function getNodeMonitorData(nodeName: string) {
           MultiLineData.value.series[2].data[MultiLineData.value.series[2].data.length - 1] !== latestData){
             MultiLineData.value.series[2].data.shift();
             MultiLineData.value.series[2].data.push(latestData);
+            performanceData.value.ATMEntry03 = latestData;
           }
           break;
         case 'ATM_Server_01':
@@ -617,6 +645,7 @@ async function getNodeMonitorData(nodeName: string) {
             lineData1.value.series.shift();
             lineData1.value.xData.push(latestXData);
             lineData1.value.series.push(latestData);
+            performanceData.value.ATMServer = latestData;
           }
           break;
         case 'Core_Service_01':
@@ -626,6 +655,7 @@ async function getNodeMonitorData(nodeName: string) {
             lineData2.value.series.shift(); 
             lineData2.value.xData.push(latestXData);
             lineData2.value.series.push(latestData);  
+            performanceData.value.CoreService = latestData;
           }
           break;
         case 'FX_Entry_01':
@@ -635,6 +665,7 @@ async function getNodeMonitorData(nodeName: string) {
             lineData3.value.series.shift();
             lineData3.value.xData.push(latestXData);
             lineData3.value.series.push(latestData);
+            performanceData.value.FXEntry = latestData;
           }
           break;
         case 'FX_Server_01':
@@ -644,15 +675,17 @@ async function getNodeMonitorData(nodeName: string) {
             lineData4.value.series.shift();
             lineData4.value.xData.push(latestXData);
             lineData4.value.series.push(latestData);
+            performanceData.value.FXServer = latestData;
           }
           break;
-          case 'Core_Entry_01':
+          case 'FX_Core_01':
           if (lineData5.value.xData[lineData5.value.xData.length - 1] !== latestXData && 
           lineData5.value.series[lineData5.value.series.length - 1] !== latestData) {
             lineData5.value.xData.shift();
             lineData5.value.series.shift();
             lineData5.value.xData.push(latestXData);
             lineData5.value.series.push(latestData);
+            performanceData.value.FXCoreService = latestData;
           }
           break;
       }
@@ -672,7 +705,7 @@ async function initAllNodeData() {
   await fetchLineDataInit('Core_Service_01');
   await fetchLineDataInit('FX_Entry_01');
   await fetchLineDataInit('FX_Server_01');
-  await fetchLineDataInit('Core_Entry_01');
+  await fetchLineDataInit('FX_Core_01');
 }
 
 // 更新所有节点数据
@@ -685,9 +718,7 @@ async function undateAllNodeData() {
   await getNodeMonitorData('Core_Service_01');
   await getNodeMonitorData('FX_Entry_01');
   await getNodeMonitorData('FX_Server_01');
-  await getNodeMonitorData('Core_Entry_01');
-  // 更新物理机信息
-  updateMachineInfo();
+  await getNodeMonitorData('FX_Core_01');
 }
 
 // 定时更新数据
@@ -707,10 +738,6 @@ onUnmounted(() => {
   if (timer) {
     clearInterval(timer);
   }
-});
-
-onUnmounted(() => {
-
 });
 </script>
 
@@ -799,7 +826,7 @@ onUnmounted(() => {
 }
 
 .drawer-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-image: linear-gradient(to right, #093f61, #195a84, #2876a9, #3693cf, #43b2f6);
   color: white;
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="pa-4 modern-offline-bg" style="height: calc(100vh-60px); overflow: hidden;">
+    <v-container fluid class="pa-4 modern-offline-bg">
       <!-- 日期选择 -->
           <v-menu
                 v-model="dateDialog"
@@ -265,9 +265,9 @@
     // 地图
     await fetchMapData('FX', currentDate.value, mapData)
     // 柱状图1
-    await fetchBarData('FX', currentDate.value, barData1)
+    await fetchBarData('ATM', currentDate.value, barData1)
     // 柱状图2
-    await fetchBarData('ATM', currentDate.value, barData2)
+    await fetchBarData('FX', currentDate.value, barData2)
     // 饼图1
     await fetchPieData1(currentDate.value, '全国', pieData1)
     // 饼图2

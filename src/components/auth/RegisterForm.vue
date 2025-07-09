@@ -6,7 +6,7 @@ import { axiosInstance } from '../../utils/request';
 const router = useRouter();
 const form = ref();
 const code = ref('');
-const username = ref('');
+const userName = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const loading = ref(false);
@@ -19,7 +19,7 @@ const codeRules = [
   (v: string) => /^[a-zA-Z0-9_]+$/.test(v) || '只能包含字母、数字和下划线'
 ];
 
-const usernameRules = [
+const userNameRules = [
   (v: string) => !!v || '用户名不能为空',
   (v: string) => /^[\u4e00-\u9fa5]+$/.test(v) || '用户名只能包含汉字',
 
@@ -46,7 +46,7 @@ async function signup() {
     try {
         const response = await axiosInstance.post('/user/register', {
         code: code.value, 
-        use_name: username.value,
+        userName: userName.value,
         password: password.value
       });
 
@@ -102,8 +102,8 @@ async function signup() {
       <v-col cols="12">
         <v-label class="font-weight-bold mb-1">用户名</v-label>
         <v-text-field
-          v-model="username"
-          :rules="usernameRules"
+          v-model="userName"
+          :rules="userNameRules"
           variant="outlined"
           color="primary"
           validate-on-blur

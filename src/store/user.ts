@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
 
 export const useUserStore = defineStore('user', {
     state: () => ({
@@ -25,10 +24,10 @@ export const useUserStore = defineStore('user', {
             this.isRolesLoaded = false;
         },
         getUser() {
-            async () => {
-                const response = await axios.get('/api/user/getuser');
-                this.username = response.data.data.username;
-            }
+            return this.username;
+        },
+        setUser(newUser: string) {
+            this.username = newUser;
         }
     },
     persist: true

@@ -156,22 +156,20 @@ const sDrawer = ref(true);
 }
 
 .v-navigation-drawer.leftSidebar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    /*background: rgb(0, 20, 40) !important;*/
+    background: rgb(0, 20, 40) !important;
     border-radius: 0 0 16px 0;
     box-shadow: 2px 0 12px rgba(33, 150, 243, 0.08);
 }
 
 .custom-app-bar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    /*background: rgb(0 20 40); /* 浅蓝渐变 */
+    /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+    background: rgb(0 20 40); 
     border-radius: 0 0 16px 0;
     box-shadow: 0 2px 8px rgba(33, 150, 243, 0.06);
 }
 
 .sidebar-logo-bar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    /*background: #596787b5;*/
+    background: #596787b5;
     padding: 20px 16px 20px 12px;
     min-height: 80px;
     box-shadow: none;

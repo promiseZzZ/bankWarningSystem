@@ -61,8 +61,8 @@ const chartOptions = computed(() => ({
   title: {
     text: props.title || '',
     left: 'center'
-    
   },
+  color: ['#0c77b9'],
   tooltip: {
     trigger: 'axis'
   },

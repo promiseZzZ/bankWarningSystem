@@ -13,6 +13,7 @@ const form = ref();
 const router = useRouter();
 const checkbox = ref(true);
 const userStore = useUserStore();
+const captchaKey = ref('');
 
 // 验证规则
 const codeRules = [
@@ -34,15 +35,16 @@ async function signin() {
       const response = await axiosInstance.post('/auth/login', {
         code: code.value,
         password: password.value,
-        //captcha: captcha.value
+        //captcha: captcha.value,
+        //captchaKey: captchaKey.value
       });
       if(response.data.status === 0){
 
         // 存储token到localStorage
-        userStore.setToken(response.data.data.token);
+        localStorage.setItem('token', response.data.data.token);
 
         //存储role到LocalStorage
-        userStore.setRole(response.data.code);
+        localStorage.setItem('role', response.data.code);
 
         await nextTick();
 
@@ -50,7 +52,7 @@ async function signin() {
         const filteredRoutes = filterRoutesByRole(dynamicRoutes, response.data.code);
         addDynamicRoutes(filteredRoutes);
 
-
+        userStore.setUser(response.data.userName);
         // 如果勾选记住我，存储用户名和密码
         if (checkbox.value) {
           localStorage.setItem('rememberedUser', code.value);
@@ -98,10 +100,21 @@ async function signin() {
   }
 }
 
-function refreshCaptcha() {
-  const captcha = document.getElementById('captcha') as HTMLImageElement;
-  captcha.src = '/captcha?t=' + new Date().getTime();
+async function refreshCaptcha() {
+  try {
+    const response = await axiosInstance.get('/auth/captcha');
+    const captchaImg = document.getElementById('captcha') as HTMLImageElement;
+    if (captchaImg && response.headers) {
+      captchaImg.src = '/auth/captcha?' + new Date().getTime();
+      captchaKey.value = response.headers.captchaKey;
+    }
+  } catch (error) {
+    console.error('获取验证码失败:', error);
+  }
 }
+
+// 页面加载时自动刷新一次验证码
+//refreshCaptcha();
 
 </script>
 
@@ -136,7 +149,7 @@ function refreshCaptcha() {
         ></v-text-field>
       </v-col>
 
-      <v-col cols="11">
+      <v-col cols="12">
         <v-label class="font-weight-bold mb-1">验证码</v-label>
         <div class="d-flex align-center gap-2">
         <v-text-field
@@ -148,7 +161,7 @@ function refreshCaptcha() {
           validate-on-blur
         ></v-text-field>
         <a href="#" @click="refreshCaptcha()" return false>
-          <v-img src=""  id="captcha" width="200" height="50"></v-img>
+         <!-- <img src="/auth/captcha"  id="captcha" alt="验证码"> -->
         </a>
         </div>
       </v-col>

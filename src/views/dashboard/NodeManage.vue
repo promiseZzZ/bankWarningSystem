@@ -9,7 +9,6 @@
         >
             <template #item.actions="{ item }">
                 <v-icon small class="mr-2" @click="openEditDialog(item)">mdi-pencil</v-icon>
-                <v-icon small @click="deleteUser(item)">mdi-delete</v-icon>
             </template>
         </v-data-table>
 
@@ -52,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, Ref } from 'vue';
+import { ref, onMounted, type Ref } from 'vue';
 import { axiosInstance } from '../../utils/request';
 
 interface EditUser {
@@ -141,10 +140,6 @@ async function saveEdit() {
   }
 }
 
-function deleteUser(item: any) {
-  items.value = items.value.filter(u => u.nodeId !== item.nodeId);
-}
-
 onMounted(() => {
   fetchOwnerList();
   fetchTableData();
@@ -162,5 +157,9 @@ onMounted(() => {
   box-shadow: 0 4px 24px 0 rgba(33, 150, 243, 0.10);
   background: #fff;
   transition: box-shadow 0.2s;
+}
+
+::v-deep .v-data-table__td {
+  border-bottom: 1px solid #000000 !important;
 }
 </style>

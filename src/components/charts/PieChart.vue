@@ -16,18 +16,59 @@ const props = defineProps<{
 }>();
 
 const option = computed(() => ({
-    color: props.colors || ['#007bff', '#dc3545', '#ffc107', '#28a745', '#6c757d', '#343a40'],
+    color: props.colors || [
+        '#1976D2', // 主蓝色
+        '#42A5F5', // 浅蓝色
+        '#64B5F6', // 天蓝色
+        '#90CAF9', // 淡蓝色
+        '#BBDEFB', // 极浅蓝
+        '#2196F3', // 标准蓝
+        '#1E88E5', // 深蓝色
+        '#1565C0', // 更深蓝
+        '#0D47A1', // 深蓝灰
+        '#E3F2FD'  // 背景蓝
+    ],
     labelLine: {show: false},
     label: {show: false},
-    tooltip : {trigger: 'item'},
-    legend: {top:0, right:0, orient: 'vertical'},
+    tooltip : {
+        trigger: 'item',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderColor: '#e0e0e0',
+        borderWidth: 1,
+        textStyle: {
+            color: '#333'
+        },
+        formatter: '{a} <br/>{b}: {c} ({d}%)'
+    },
+    legend: {
+        top: 0, 
+        right: 0, 
+        orient: 'vertical',
+        textStyle: {
+            color: '#666',
+            fontSize: 12
+        },
+        itemGap: 8
+    },
     series: [{
         name: props.title,
         type: 'pie',
         labelLine: {show: false},
         label: {show: false},
         radius: ['30%', '70%'],
-        data: props.data
+        data: props.data,
+        emphasis: {
+            itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.3)'
+            }
+        },
+        itemStyle: {
+            borderRadius: 4,
+            borderColor: '#fff',
+            borderWidth: 2
+        }
     }]
 }))
 </script>

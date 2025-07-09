@@ -59,12 +59,13 @@
         <v-card class="pa-4 modern-card" elevation="8" hover>
           <div class="d-flex justify-space-between align-center mb-1">
             <span class="table-title">数据列表</span>
-            <v-btn color="primary" @click="exportExcel" class="export-btn">导出为Excel</v-btn>
+            <v-btn color="#0c77b9" @click="exportExcel" class="export-btn">导出为Excel</v-btn>
           </div>
           <v-data-table
             :headers="tableHeaders"
             :items="tableData"
             :items-per-page="4"
+            :items-per-page-options="[4]"
             density="compact"
             item-key="name" 
             show-divider>

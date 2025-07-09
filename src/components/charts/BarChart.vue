@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   title: '',
   xAxisName: '',
   yAxisName: '',
-  color: () => ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
+  color: () => ['#5B8FF9', '#61DDAA', '#65789B', '#F6BD16', '#7262fd', '#78D3F8', '#9661BC', '#F6903D', '#008685', '#F08BB4'],
   direction: 'horizontal' // 默认为水平条形图
 })
 
@@ -62,6 +62,7 @@ const updateChart = () => {
           fontWeight: 'bold'
         }
       },
+      color:['#0c77b9'],
       tooltip: {
         trigger: 'axis',
         axisPointer: {

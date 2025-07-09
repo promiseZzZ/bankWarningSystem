@@ -109,7 +109,7 @@ router.beforeEach(async (to, from ,next) => {
   }
 
   //已登录但访问登录页 → 重定向
-  if (userStore.token && to.path === '/auth/login') {
+  if (userStore.token && to.path === '/auth/login' && from.path !== '/auth/register') {
     next('/main/performanceMonitoring');
     return;
   }

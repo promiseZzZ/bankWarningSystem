@@ -1,11 +1,18 @@
 <template>
-  <v-container>
+  <v-container fluid class="modern-alarm-bg">
     <v-row>
       <v-col cols="12">
         <v-card class="pa-4 modern-card" elevation="8" hover>
           <div class="d-flex justify-space-between align-center mb-2">
             <span class="table-title">筛选</span>
-          </div>
+          <!-- 重置按钮 -->
+              <v-btn 
+                color="#0c77b9" 
+                @click="handleReset"
+                prepend-icon="mdi-refresh">
+                重置
+              </v-btn>
+            </div>
           <v-row class="mb-4" dense>
             <v-col cols="3">
               <v-select 
@@ -13,7 +20,7 @@
               :items="nodeOptions"
               label="节点名" 
               clearable
-              @update:model-value="handleSearch" />
+              @update:model-value="fetchTableData(buildTableParams())" />
             </v-col>
             <v-col cols="3">
               <v-select
@@ -92,34 +99,19 @@
             </v-col>
           </v-row>
 
-          <!-- 搜索和重置按钮 -->
-          <v-row class="mb-4" dense>
-            <v-col cols="12" class="d-flex gap-2">
-              <v-btn 
-                color="secondary" 
-                @click="handleReset"
-                prepend-icon="mdi-refresh">
-                重置
-              </v-btn>
-            </v-col>
-          </v-row>
-
           <v-row class="mb-4" dense>
             <v-col cols="12" class="d-flex gap-2 align-center">
               <span v-if="selected.length > 0" class="text-body-2 text-grey-600">
                 已选中 {{ selected.length }} 项
               </span>
-              <v-btn color="success" 
+              <v-btn color="#0c77b9" 
               :disabled="!selected.length" 
               @click="showStatusDialog = true" 
               hover>批量修改状态</v-btn>
-              <v-btn color="error" 
+              <v-btn color="#0c77b9" 
               :disabled="!selected.length" 
               @click="handleBatchDelete" 
               hover>批量删除</v-btn>
-              <v-btn color="info" 
-              @click="debugSelection" 
-              hover>调试选择状态</v-btn>
             </v-col>
           </v-row>
 
@@ -131,8 +123,11 @@
                 <v-select
                   v-model="selectedStatus"
                   :items="statusOptions"
-                  label="请选择要修改的状态"
+                  label="状态"
                   required
+                  hint="请选择要修改的状态"
+                  persistent-hint
+                  
                 />
               </v-card-text>
               <v-card-actions>
@@ -149,14 +144,25 @@
             :headers="tableHeaders"
             :items="tableData"
             :items-per-page="10"
+            :items-per-page-options="[5, 10]"
             :loading="loading"
             density="compact"
             item-key="id" 
             show-divider
             show-select
-            v-model:selected="selected"
-            return-object
+            v-model="selected"
             @update:selected="handleSelectionChange">
+            <template #item.statusText="{ item }">
+              <v-chip 
+              :color="item.statusText === '待处理' ? 'error' : item.statusText === '处理中' ? 'primary' : 'success'"
+              variant="outlined"
+              text-color="white"
+              small
+              class="font-weight-bold"
+              >
+              {{ item.statusText }}
+              </v-chip>
+            </template>
           </v-data-table>
         </v-card>
       </v-col>
@@ -166,7 +172,7 @@
 </template>
   
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted} from 'vue';
 import { axiosInstance } from '../../utils/request';
 
 // 定义表格数据类型
@@ -176,7 +182,8 @@ interface TableItem {
   recordTime: string;
   nodeName: string;
   responseTime: string;
-  status: string; 
+  status: number; 
+  statusText: string;
   userNames: string;
 }
 
@@ -185,7 +192,7 @@ const tableHeaders = ref([
   { title: '记录时间', key: 'recordTime' },
   { title: '节点名', key: 'nodeName' },
   { title: '响应时间', key: 'responseTime' },
-  { title: '状态', key: 'status'},
+  { title: '状态', key: 'statusText', },
   { title: '负责人', key: 'userNames' },
 ]);
 
@@ -200,7 +207,7 @@ const filters = ref({
 });
 
 const statusOptions = ['待处理','处理中','已处理'];
-const nodeOptions = ['ATM_Entry_01','ATM_Entry_02','ATM_Entry_03','ATM_Server_01','Core_Service_01','FX_Entry_01','FX_Server_01','Core_Entry_01'];
+const nodeOptions = ref<string[]>([]);
 
 const startDateMenu = ref(false);
 const endDateMenu = ref(false);
@@ -210,33 +217,6 @@ const showStatusDialog = ref(false);
 const selectedStatus = ref('');
 const endDateError = ref('');
 const statusError = ref('');
-
-const mockRecords = [
-  {
-    id: 1,
-    recordTime: '2024-06-01 10:00:00',
-    nodeName: 'ATM_Entry_01',
-    responseTime: 120,
-    status: 0,
-    userNames: ['张三', '李四']
-  },
-  {
-    id: 2,
-    recordTime: '2024-06-01 10:05:00',
-    nodeName: 'ATM_Entry_02',
-    responseTime: 150,
-    status: 1,
-    userNames: ['王五']
-  },
-  {
-    id: 3,
-    recordTime: '2024-06-01 10:10:00',
-    nodeName: 'ATM_Server_01',
-    responseTime: 200,
-    status: 2,
-    userNames: ['赵六']
-  }
-];
 
 // 拼接日期时间字符串
 function getDateTimeString(date: string | Date, hour: number, minute: number, second: number) {
@@ -276,15 +256,26 @@ async function fetchTableData(params: {
     console.log('API响应:', response.data);
     
     if (response.data && response.data.data && Array.isArray(response.data.data.records)) {
+      // 检查原始数据的ID字段
+      console.log('原始数据记录:', response.data.data.records);
+      response.data.data.records.forEach((item: any, index: number) => {
+        console.log(`原始记录 ${index + 1}:`, {
+          id: item.id,
+          idType: typeof item.id,
+          hasId: 'id' in item,
+          keys: Object.keys(item)
+        });
+      });
+      
       // 处理数据格式
       tableData.value = response.data.data.records.map((item: any, index: number) => ({
         ...item,
-        // 确保 id 存在且唯一
-        id: item.id || `temp_${Date.now()}_${index}`,
+        // 使用原始ID，确保ID存在
+        id: Number(item.id),
         // 转换 userNames 数组为字符串
         userNames: Array.isArray(item.userNames) ? item.userNames.join(', ') : item.userNames,
         // 转换状态数字为中文
-        status: getStatusText(item.status),
+        statusText: getStatusText(item.status),
         // 格式化响应时间
         responseTime: `${item.responseTime}ms`,
         // 添加序号
@@ -357,28 +348,6 @@ function buildTableParams() {
   return params;
 }
 
-// 搜索处理
-const handleSearch = async () => {
-  // 验证状态必选
-  if (!filters.value.status) {
-    statusError.value = '请选择状态';
-    return;
-  }
-  statusError.value = '';
-  
-  // 验证日期
-  if (filters.value.startDateTime && filters.value.endDateTime) {
-    const startDate = new Date(filters.value.startDateTime);
-    const endDate = new Date(filters.value.endDateTime);
-    if (endDate < startDate) {
-      endDateError.value = '结束日期不能早于开始日期';
-      return;
-    }
-  }
-  endDateError.value = '';
-  
-  await fetchTableData(buildTableParams());
-};
 
 // 重置处理
 const handleReset = async () => {
@@ -398,9 +367,6 @@ const handleReset = async () => {
 const handleBatchUpdateStatus = async () => {
   if (!selectedStatus.value) return;
   
-  console.log('选中的项目:', selected.value);
-  console.log('选中的状态:', selectedStatus.value);
-  
   // 将中文状态转换为数字
   const statusMap: { [key: string]: number } = {
     '待处理': 0,
@@ -408,14 +374,12 @@ const handleBatchUpdateStatus = async () => {
     '已处理': 2
   };
   const status = statusMap[selectedStatus.value];
-  const ids = selected.value.map(item => item.id);
-  
-  console.log('要更新的ID:', ids);
-  console.log('要更新的状态:', status);
-  
+  const ids = Array.from(selected.value);
+
   try {
-    const response = await axiosInstance.post('/node-alert/updateStatus', { ids, status });
-    console.log('更新状态响应:', response);
+    const requestBody = { ids, status };
+    await axiosInstance.post('/node-alert/updateStatus', requestBody);
+
     // 保存当前选中的ID
     const selectedIds = selected.value.map(item => item.id);
     await fetchTableData(buildTableParams());
@@ -431,13 +395,22 @@ const handleBatchUpdateStatus = async () => {
 
 // 批量删除
 const handleBatchDelete = async () => {
-  const ids = selected.value.map(item => item.id);
   
-  console.log('要删除的项目:', selected.value);
-  console.log('要删除的ID:', ids);
+  const ids = Array.from(selected.value);
+
+  // 详细检查每个选中项目的ID
+  selected.value.forEach((item, index) => {
+    console.log(`选中项目 ${index + 1}:`, {
+      id: item.id,
+      idType: typeof item.id,
+      nodeName: item.nodeName,
+      recordTime: item.recordTime
+    });
+  });
   
   try {
-    const response = await axiosInstance.post('/node-alert/deleteAlertRecord', { ids });
+    const requestBody = { ids };
+    const response = await axiosInstance.post('/node-alert/deleteAlertRecord', requestBody);
     console.log('删除响应:', response);
     await fetchTableData(buildTableParams());
     // 删除后清空选择是合理的
@@ -452,7 +425,7 @@ const handleStartDateChange = async () => {
   startDateMenu.value = false;
   // 清除结束日期错误
   endDateError.value = '';
-  await handleSearch();
+  await fetchTableData(buildTableParams());
 };
 
 const handleEndDateChange = async () => {
@@ -467,7 +440,7 @@ const handleEndDateChange = async () => {
     }
   }
   endDateError.value = '';
-  await handleSearch();
+  await fetchTableData(buildTableParams());
 };
 
 // 处理状态变化
@@ -478,54 +451,60 @@ const handleStatusChange = async () => {
     return;
   }
   statusError.value = '';
-  await handleSearch();
+  await fetchTableData(buildTableParams());
 };
-
-onMounted(() => {
-  // 设置默认状态为"待处理"
-  filters.value.status = '待处理';
-  fetchTableData({ page: 3, size: 5, status: 0 });
-});
-
-// 监听选择状态变化
-watch(selected, (newSelected, oldSelected) => {
-  console.log('选择状态变化:', newSelected);
-  console.log('选中数量:', newSelected.length);
-  console.log('之前选中数量:', oldSelected?.length || 0);
-  if (newSelected.length > 0) {
-    console.log('选中的项目:', newSelected.map(item => ({ id: item.id, nodeName: item.nodeName, status: item.status })));
-  }
-  console.log('当前表格数据ID:', tableData.value.map(item => item.id));
-}, { deep: true });
 
 // 处理选择变化
 const handleSelectionChange = (newSelected: TableItem[]) => {
   console.log('handleSelectionChange 被调用');
   console.log('新的选中项目:', newSelected);
   console.log('新的选中数量:', newSelected.length);
+  
+  // 详细检查每个选中项目的ID
+  newSelected.forEach((item, index) => {
+    console.log(`选中项目 ${index + 1}:`, {
+      id: item.id,
+      idType: typeof item.id,
+      nodeName: item.nodeName,
+      recordTime: item.recordTime
+    });
+  });
+  
   selected.value = newSelected;
 };
 
-// 调试选择状态
-const debugSelection = () => {
-  console.log('当前选中的项目:', selected.value);
-  console.log('选中项目数量:', selected.value.length);
-  console.log('当前选中的状态:', selected.value.map(item => item.status));
-  console.log('当前表格数据:', tableData.value);
-  console.log('表格数据数量:', tableData.value.length);
-  console.log('表格数据ID列表:', tableData.value.map(item => item.id));
-};
+async function fetchNodeOptions() {
+  const response = await axiosInstance.get('/node-alert/getUserNodeName');
+  nodeOptions.value = response.data.data;
+}
+
+onMounted(() => {
+  // 设置默认状态为"待处理"
+  filters.value.status = '待处理';
+  fetchNodeOptions();
+  fetchTableData({ page: 3, size: 5, status: 0 });
+});
+
 </script>
   
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px;
+.modern-alarm-bg {
+  background: #e0e4ec42;
+/* background: linear-gradient(135deg, #e3f2fd 0%, #f8fdff 100%); */
+overflow: hidden;
 }
 
 .gap-2 {
   gap: 8px;
+}
+
+.table-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+::v-deep .v-data-table__td {
+  border-bottom: 1px solid #000000 !important;
 }
 </style>
